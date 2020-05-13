@@ -51,6 +51,12 @@ generate_tests(File) ->
     io:format("generating tests from ~p~n", [File]),
     {ok, Lines} = read_lines(File),
     io:format("Lines are ~p~n", [Lines]),
+    Hash = base16:encode(crypto:hash(sha, Lines)),
+    io:format("Hash is ~p~n", [Hash]),
+    Basename = filelib:basename(File),
+    io:format("Basename is ~p~n", [Basename]),
+    FileName = Basename ++ "_" ++ Hash ++ "_tests.erl",
+    io:format("FileName is ~p~n", [FileName]),
     ok.
 
 read_lines(File) ->
