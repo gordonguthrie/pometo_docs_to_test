@@ -44,7 +44,7 @@ get_files(Root) ->
     Files     = [X            || X <- RawFiles, filename:extension(X) == ".md"],
     Dirs      = [X ++ "/*"    || X <- RawFiles, filelib:is_dir(X)],
     DeepFiles = [get_files(X) || X <- Dirs],
-    lists:flatten(Files ++ DeepFiles).
+    Files ++ DeepFiles.
 
 generate_tests(File) ->
     io:format("generating tests from ~p~n", [File]),
