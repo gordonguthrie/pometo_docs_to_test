@@ -1,7 +1,7 @@
-pometo_docs_to_test
-=====
+# Pometo Docs To Test Rebar3 Plugin
 
-builds eunit tests from pomoto markdown documentation
+
+Builds eunit tests from `Pometo` markdown documentation
 
 Build
 -----
