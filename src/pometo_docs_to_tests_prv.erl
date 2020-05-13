@@ -33,6 +33,7 @@ format_error(Reason) ->
     io_lib:format("~p", [Reason]).
 
 make_tests(App) ->
+    io:format("App is ~p~n", [App]),
     SrcDirs = rebar_dir:src_dirs(rebar_app_info:dir(App), ["src"]),
     io:format("looking for Docs relative to ~p~n", [SrcDirs]),
     DocsFiles = get_files(SrcDirs),
