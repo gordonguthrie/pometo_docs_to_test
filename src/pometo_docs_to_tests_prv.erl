@@ -43,5 +43,8 @@ get_files(Root) ->
     Files     = [X            || X <- RawFiles, filename:extension(X) == ".md"],
     Dirs      = [X            || X <- RawFiles, filelib:is_dir(X)],
     DeepFiles = [get_files(X) || X <- Dirs],
+    io:format("Files is     ~p~n", [Files]),
+    io:format("Dirs is      ~p~n", [Dirs]),
+    io:format("DeepFiles is ~p~n", [DeepFiles]),
     lists:flatten(Files ++ DeepFiles).
 
