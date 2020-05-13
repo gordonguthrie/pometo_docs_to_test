@@ -2,7 +2,7 @@
 
 -export([init/1, do/1, format_error/1]).
 
--define(PROVIDER, pometo_docs_to_test).
+-define(PROVIDER, pometo_docs_to_tests).
 -define(DEPS, [app_discovery]).
 
 %% ===================================================================
@@ -11,12 +11,12 @@
 -spec init(rebar_state:t()) -> {ok, rebar_state:t()}.
 init(State) ->
     Provider = providers:create([
-            {name, ?PROVIDER},                       % The 'user friendly' name of the task
-            {module, ?MODULE},                       % The module implementation of the task
-            {bare, true},                            % The task can be run by the user, always true
-            {deps, ?DEPS},                           % The list of dependencies
-            {example, "rebar3 pometo_docs_to_test"}, % How to use the plugin
-            {opts, []},                              % list of options understood by the plugin
+            {name, ?PROVIDER},                        % The 'user friendly' name of the task
+            {module, ?MODULE},                        % The module implementation of the task
+            {bare, true},                             % The task can be run by the user, always true
+            {deps, ?DEPS},                            % The list of dependencies
+            {example, "rebar3 pometo_docs_to_tests"}, % How to use the plugin
+            {opts, []},                               % list of options understood by the plugin
             {short_desc, "builds eunit tests from pometo markdown documentation"},
             {desc, "builds eunit tests from pometo markdown documentation"}
     ]),
