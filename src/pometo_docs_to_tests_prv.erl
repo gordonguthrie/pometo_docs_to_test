@@ -33,17 +33,12 @@ format_error(Reason) ->
     io_lib:format("~p", [Reason]).
 
 make_tests(App) ->
-    io:format("info is ~p~n", [rebar_app_info:dir(App)]),
-    SrcDirs = rebar_dir:src_dirs(rebar_app_info:dir(App)),
-    io:format("looking for Docs relative to ~p~n", [SrcDirs]),
-    DocsFiles = get_files(SrcDirs),
+    Root = rebar_app_info:dir(App),
+    DocsFiles = get_files(Root),
     io:format("DocsFiles are ~p~n", [DocsFiles]).
 
-get_files(SrcDirs) ->
-    WildCards = "/../docs/*.md",
-    Files = lists:merge([filelib:wildcard(X ++ WildCards) || X <- SrcDirs]),
-    FilterFun = fun(X) ->
-                        not filelib:is_dir(X)
-                end,
-    lists:filter(FilterFun, Files).
+get_files(Root) ->
+    Files = filelib:wildcar(Root ++ "/docs/*.md"),
+    io:format("Files is ~p~n", [Files]),
+    Files.
 
