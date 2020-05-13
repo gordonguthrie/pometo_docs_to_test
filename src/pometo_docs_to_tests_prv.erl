@@ -38,7 +38,7 @@ make_tests(App) ->
     io:format("DocsFiles are ~p~n", [DocsFiles]).
 
 get_files(Root) ->
-    Files = filelib:wildcard(Root ++ "/docs/*.md"),
+    Files = filelib:wildcard(Root ++ "/docs/*"),
     io:format("Files is ~p~n", [Files]),
     Files.
 
