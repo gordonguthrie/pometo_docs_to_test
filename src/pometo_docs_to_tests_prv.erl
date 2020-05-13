@@ -35,16 +35,35 @@ format_error(Reason) ->
 make_tests(App) ->
     Root = rebar_app_info:dir(App),
     DocsFiles = get_files(Root ++ "/docs/*"),
-    io:format("DocsFiles are ~p~n", [DocsFiles]).
+    io:format("DocsFiles are ~p~n", [DocsFiles]),
+    [generate_tests(X) || X <- DocsFiles],
+    ok.
 
 get_files(Root) ->
     RawFiles = filelib:wildcard(Root),
-    io:format("RawFiles is ~p~n", [RawFiles]),
     Files     = [X            || X <- RawFiles, filename:extension(X) == ".md"],
-    io:format("Files is     ~p~n", [Files]),
     Dirs      = [X ++ "/*"    || X <- RawFiles, filelib:is_dir(X)],
-    io:format("Dirs is      ~p~n", [Dirs]),
     DeepFiles = [get_files(X) || X <- Dirs],
-    io:format("DeepFiles is ~p~n", [DeepFiles]),
     lists:flatten(Files ++ DeepFiles).
+
+generate_tests(File) ->
+    io:format("generating tests from ~p~n", [File]),
+    {ok, Lines} = read_lines(File),
+    io:format("Lines are ~p~n", [Lines]),
+    ok.
+
+read_lines(File) ->
+    case file:open(File, read) of
+        {error, Err} -> {error, Err};
+        {ok, Id}     -> read_l2(Id, [])
+    end.
+
+read_l2(Id, Acc) ->
+    case file:read_line(Id) of
+        {ok, Data}   -> read_l2(Id, [Data | Acc]);
+        {error, Err} -> {error, Err};
+        eof          -> {ok, lists:reverse(Acc)}
+    end.
+
+
 
