@@ -32,6 +32,17 @@ do(State) ->
 format_error(Reason) ->
     io_lib:format("~p", [Reason]).
 
-make_tests(X) ->
-    io:format("in make tests for ~p~n", [X]),
-    ok.
+make_tests(App) ->
+    SrcDirs = rebar_dir:src_dirs(rebar_app_info:dir(App), ["src"]),
+    io:format("looking for Docs relative to ~p~n", [SrcDirs]),
+    DocsFiles = get_files(SrcDirs),
+    io:format("DocsFiles are ~p~n", [DocsFiles]).
+
+get_files(SrcDirs) ->
+    WildCards = "/../docs/*.md",
+    Files = lists:merge([filelib:wildcard(X ++ WildCards) || X <- SrcDirs]),
+    FilterFun = fun(X) ->
+                        not filelib:is_dir(X)
+                end,
+    lists:filter(FilterFun, Files).
+
