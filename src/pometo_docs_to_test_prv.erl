@@ -33,5 +33,5 @@ format_error(Reason) ->
     io_lib:format("~p", [Reason]).
 
 make_tests(X) ->
-    io:format("in make tests for ", [X]),
+    io:format("in make tests for ~p~n", [X]),
     ok.
