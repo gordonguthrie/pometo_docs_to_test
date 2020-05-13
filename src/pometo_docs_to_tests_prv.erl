@@ -42,7 +42,7 @@ get_files(Root) ->
     io:format("RawFiles is ~p~n", [RawFiles]),
     Files     = [X            || X <- RawFiles, filename:extension(X) == ".md"],
     io:format("Files is     ~p~n", [Files]),
-    Dirs      = [X + "/*"     || X <- RawFiles, filelib:is_dir(X)],
+    Dirs      = [X ++ "/*"    || X <- RawFiles, filelib:is_dir(X)],
     io:format("Dirs is      ~p~n", [Dirs]),
     DeepFiles = [get_files(X) || X <- Dirs],
     io:format("DeepFiles is ~p~n", [DeepFiles]),
