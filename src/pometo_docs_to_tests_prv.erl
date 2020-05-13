@@ -41,10 +41,10 @@ get_files(Root) ->
     RawFiles = filelib:wildcard(Root ++ "/docs/*"),
     io:format("RawFiles is ~p~n", [RawFiles]),
     Files     = [X            || X <- RawFiles, filename:extension(X) == ".md"],
-    Dirs      = [X            || X <- RawFiles, filelib:is_dir(X)],
-    DeepFiles = [get_files(X) || X <- Dirs],
     io:format("Files is     ~p~n", [Files]),
+    Dirs      = [X            || X <- RawFiles, filelib:is_dir(X)],
     io:format("Dirs is      ~p~n", [Dirs]),
+    DeepFiles = [get_files(X) || X <- Dirs],
     io:format("DeepFiles is ~p~n", [DeepFiles]),
     lists:flatten(Files ++ DeepFiles).
 
