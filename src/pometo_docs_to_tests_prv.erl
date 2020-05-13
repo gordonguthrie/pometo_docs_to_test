@@ -34,11 +34,11 @@ format_error(Reason) ->
 
 make_tests(App) ->
     Root = rebar_app_info:dir(App),
-    DocsFiles = get_files(Root),
+    DocsFiles = get_files(Root ++ "/docs/*"),
     io:format("DocsFiles are ~p~n", [DocsFiles]).
 
 get_files(Root) ->
-    RawFiles = filelib:wildcard(Root ++ "/docs/*"),
+    RawFiles = filelib:wildcard(Root),
     io:format("RawFiles is ~p~n", [RawFiles]),
     Files     = [X            || X <- RawFiles, filename:extension(X) == ".md"],
     io:format("Files is     ~p~n", [Files]),
