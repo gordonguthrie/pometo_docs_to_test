@@ -1,4 +1,4 @@
-{application, pometo_docs_to_test,
+{application, pometo_docs_to_tests,
  [{description, "builds eunit tests from pometo markdown documentation"},
   {vsn, "0.1.0"},
   {registered, []},
