@@ -46,6 +46,7 @@ get_files(Root) ->
     DeepFiles = [get_files(X) || X <- Dirs],
     Files ++ DeepFiles.
 
+generate_tests([]) -> ok;
 generate_tests(File) ->
     io:format("generating tests from ~p~n", [File]),
     {ok, Lines} = read_lines(File),
