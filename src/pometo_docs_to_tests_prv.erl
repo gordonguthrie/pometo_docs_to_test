@@ -52,10 +52,10 @@ make_tests(App) ->
 
 get_files(Root) ->
     RawFiles = filelib:wildcard(Root),
-    Files     = [X            || X <- RawFiles, filename:extension(X) == ".md"],
-    Dirs      = [X ++ "/*"    || X <- RawFiles, filelib:is_dir(X)],
-    DeepFiles = [get_files(X) || X <- Dirs],
-    Files ++ DeepFiles.
+    Files     = [{X}            || X <- RawFiles, filename:extension(X) == ".md"],
+    Dirs      = [X ++ "/*"      || X <- RawFiles, filelib:is_dir(X)],
+    DeepFiles = [get_files(X)   || X <- Dirs],
+    [X || {X} <- Files ++ lists:flatten(DeepFiles)].
 
 generate_tests([]) -> ok;
 generate_tests(File) ->
