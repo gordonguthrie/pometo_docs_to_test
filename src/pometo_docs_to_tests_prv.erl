@@ -102,10 +102,10 @@ gen_test3(["```" ++ _Rest | T], ?GETTING_RESULT, Test, Acc) ->
     gen_test3(T, ?IN_TEXT, #test{seq = N + 1}, [NewTest| Acc]);
 gen_test3([Line | T], ?GETTING_RESULT, Test, Acc) ->
     #test{resultsacc = R} = Test,
-    gen_test3(T, ?GETTING_RESULT, Test#test{resultsacc = [Line | R]}, Acc);
+    gen_test3(T, ?GETTING_RESULT, Test#test{resultsacc = [string:trim(Line) | R]}, Acc);
 gen_test3([Line | T], ?GETTING_TEST, Test, Acc) ->
     #test{codeacc = C} = Test,
-    gen_test3(T, ?GETTING_TEST, Test#test{codeacc = [Line | C]}, Acc);
+    gen_test3(T, ?GETTING_TEST, Test#test{codeacc = [string:trim(Line) | C]}, Acc);
 gen_test3(["```pometo_results" ++ _Rest | T], ?IN_TEXT, Test, Acc) ->
     gen_test3(T, ?GETTING_RESULT, Test, Acc);
 gen_test3(["```pometo" ++ _Rest | T], ?IN_TEXT, Test, Acc) ->
@@ -130,9 +130,9 @@ norm2([_H | T], Acc) ->
 make_test(Title, Seq, Code, Results) ->
 io:format("Code is ~p~n Results is ~p~n", [Code, Results]),
 Title ++ "_" ++ Seq ++ "_test_() ->\n" ++
-    "    Code     = \"" ++ string:trim(lists:flatten(Code))    ++ "\",\n" ++
-    "    Expected = \"" ++ string:trim(lists:flatten(Results)) ++ "\",\n" ++
-    "    run(Code, Expected).".
+    "    Code     = \"" ++ string:join(Code,    "\" ++\n    \"")    ++ "\",\n" ++
+    "    Expected = \"" ++ string:join(Results, "\" ++\n    \"")    ++ "\",\n" ++
+    "    run(Code, Expected).\n\n".
 
 read_lines(File) ->
     case file:open(File, read) of
