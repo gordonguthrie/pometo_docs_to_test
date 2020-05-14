@@ -80,7 +80,7 @@ gen_test2(Filename, Lines) ->
     end,
     ok.
 
-gen_test3([], _, _, Acc) -> lists:reverse(Acc);
+gen_test3([], _, _, Acc) -> lists:flatten(lists:reverse(Acc));
 gen_test3(["```" ++ _Rest | T], ?GETTING_TEST, Test, Acc) ->
     io:format("in 8~n"),
     gen_test3(T, ?IN_TEXT, Test, Acc);
