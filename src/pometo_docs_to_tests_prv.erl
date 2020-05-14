@@ -181,9 +181,13 @@ make_runner() ->
 "%\n" ++
 "\n" ++
 "run(Code, Expected) when is_list(Code) andalso is_list(Expected) ->\n" ++
-"    Tokens = pometo_lexer:get_tokens(Code),\n" ++
-"    Parsed = parse(Tokens),\n" ++
-"    Got    = pometo_runtime:run_ast(Parsed, []),\n" ++
+"    Got = try\n" ++
+"        Tokens = pometo_lexer:get_tokens(Code),\n" ++
+"        Parsed = parse(Tokens),\n" ++
+"        pometo_runtime:run_ast(Parsed, []),\n" ++
+"    catch\n" ++
+"        _ -> \"{error, \"test failed to run\"}" ++
+"    end," ++
 "    ?_assertEqual(Got, Expected).\n" ++
 "\n" ++
 "parse(Tokenlist) ->\n" ++
