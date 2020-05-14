@@ -186,8 +186,8 @@ make_runner() ->
 "        Parsed = parse(Tokens),\n" ++
 "        pometo_runtime:run_ast(Parsed, []),\n" ++
 "    catch\n" ++
-"        _ -> \"{error, \"test failed to run\"}" ++
-"    end," ++
+"        _ -> \"{error, \"test failed to run\"}\n" ++
+"    end,\n" ++
 "    ?_assertEqual(Got, Expected).\n" ++
 "\n" ++
 "parse(Tokenlist) ->\n" ++
