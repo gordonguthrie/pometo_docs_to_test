@@ -108,9 +108,21 @@ gen_test3(["```pometo" ++ _Rest | T], ?IN_TEXT, Test, Acc) ->
     gen_test3(T, ?GETTING_TEST, Test, Acc);
 gen_test3(["## " ++ Title | T], ?IN_TEXT, Test, Acc) ->
     io:format("in 1 ~p~n", [Title]),
-    gen_test3(T, ?IN_TEXT, Test#test{title = Title}, Acc);
+    NewTitle = normalise(Title),
+    gen_test3(T, ?IN_TEXT, Test#test{title = NewTitle}, Acc);
 gen_test3([_H | T], ?IN_TEXT, Test, Acc) ->
     gen_test3(T, ?IN_TEXT, Test, Acc).
+
+normalise(Text) ->
+    norm2(string:to_lower(Text), []).
+
+norm2([], Acc) -> lists:reverse(Acc);
+norm2([H | T], Acc) when H >= 97 andalso H =< 122 ->
+    norm2(T, [H | Acc]);
+norm2([" " | T], Acc) -> 
+    norm2(T, ["_" | Acc]);
+norm2([_H | T], Acc) ->
+     norm2(T, Acc).
 
 make_test(Title, Seq, Code, Results) ->
 Title ++ "_" ++ Seq ++ "_test_() ->\n" ++
