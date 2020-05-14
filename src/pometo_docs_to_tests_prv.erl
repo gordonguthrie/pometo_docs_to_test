@@ -54,6 +54,7 @@ make_tests(App) ->
     ok = del_dir(GeneratedTestDir),
     ok = file:make_dir(GeneratedTestDir),
     DocsFiles = get_files(filename:join([Root, "docs", "*"])),
+    io:format("DocsFiles is ~p~n", [DocsFiles]),
     [generate_tests(X, GeneratedTestDir) || X <- DocsFiles],
     ok.
 
@@ -61,6 +62,7 @@ get_files(Root) ->
     RawFiles = filelib:wildcard(Root),
     io:format("RawFiles is ~p in ~p~n", [RawFiles, Root]),
     Files     = [{X}                   || X <- RawFiles, filename:extension(X) == ".md"],
+    io:format("Files is ~p~n", [Files]),
     Dirs      = [filename:join(X, "*") || X <- RawFiles, filelib:is_dir(X)],
     io:format("Dirs is ~p~n", [Dirs]),
     DeepFiles = [get_files(X)          || X <- Dirs],
