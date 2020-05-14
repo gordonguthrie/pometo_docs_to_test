@@ -5,6 +5,17 @@
 -define(PROVIDER, pometo_docs_to_tests).
 -define(DEPS, [app_discovery]).
 
+-define(IN_TEXT,        1).
+-define(GETTING_TEST,   2).
+-define(GETTING_RESULT, 3).
+
+-record(test, {
+               seq        = 1,
+               title      = "",
+               codeacc    = [],
+               resultsacc = []
+    }).
+
 %% ===================================================================
 %% Public API
 %% ===================================================================
@@ -50,14 +61,49 @@ generate_tests([]) -> ok;
 generate_tests(File) ->
     io:format("generating tests from ~p~n", [File]),
     {ok, Lines} = read_lines(File),
-    io:format("Lines are ~p~n", [Lines]),
     Hash = binary:bin_to_list(base16:encode(crypto:hash(sha, Lines))),
-    io:format("Hash is ~p~n", [Hash]),
-    Basename = filename:basename(File),
-    io:format("Basename is ~p~n", [Basename]),
-    FileName = Basename ++ "_" ++ Hash ++ "_tests.erl",
-    io:format("FileName is ~p~n", [FileName]),
+    Basename = filename:basename(File, ".md"),
+    FileName = Basename ++ "_" ++ Hash ++ "_tests",
+    gen_test2(FileName, Lines),
     ok.
+
+gen_test2(Filename, Lines) ->
+    Header  = "-module(" ++ Filename ++ ").\n\n",
+    Include = "-include_lib(\"eunit/include/eunit.hrl\").\n\n",
+    Export  = "-compile([export_all]).\n\n",
+    Body = gen_test3(Lines, ?IN_TEXT, #test{}, []),
+    Module = Header ++ Include ++ Export ++ Body,
+    io:format("tests are ~p~n", [Module]),
+    ok.
+
+gen_test3([], _, _, Acc) -> lists:flatten(lists:reverse(Acc));
+gen_test3(["## " ++ Title | T], ?IN_TEXT, Test, Acc) ->
+    gen_test3(T, ?IN_TEXT, Test#test{title = Title}, Acc);
+gen_test3(["## " ++ Line | T], ?GETTING_RESULT, Test, Acc) ->
+    #test{resultsacc = R} = Test,
+    gen_test3(T, ?GETTING_RESULT, Test#test{resultsacc = [Line | R]}, Acc);
+gen_test3(["## " ++ Line | T], ?GETTING_TEST, Test, Acc) ->
+    #test{codeacc = C} = Test,
+    gen_test3(T, ?GETTING_TEST, Test#test{codeacc = [Line | C]}, Acc);
+gen_test3(["```pometo_results" ++ _Rest | T], ?IN_TEXT, Test, Acc) ->
+    gen_test3(T, ?GETTING_RESULT, Test, Acc);
+gen_test3(["```" ++ _Rest | T], ?GETTING_RESULT, Test, Acc) ->
+    #test{seq        = N,
+          title      = T,
+          codeacc    = C,
+          resultsacc = R} = Test,
+    NewTest = make_test(T, integer_to_list(N), lists:reverse(C), lists:reverse(R)),
+    gen_test3(T, ?IN_TEXT, #test{seq = N + 1}, [NewTest| Acc]);
+gen_test3(["```pometo" ++ _Rest | T], ?IN_TEXT, Test, Acc) ->
+    gen_test3(T, ?GETTING_TEST, Test, Acc);
+gen_test3(["```" ++ _Rest | T], ?GETTING_TEST, Test, Acc) ->
+    gen_test3(T, ?IN_TEXT, Test, Acc).
+
+make_test(Title, Seq, Code, Results) ->
+Title ++ "_" ++ Seq ++ "_test_() ->\n" ++
+    "Code = \"" ++ string:join(Code, "\n") ++ "\"," ++
+    "Expected = \"" ++ string:join(Results, "\n") ++ "\"," ++
+    "run(Code, Expected).".
 
 read_lines(File) ->
     case file:open(File, read) of
