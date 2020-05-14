@@ -66,6 +66,7 @@ get_files(Root) ->
     Dirs      = [filename:join(X, "*") || X <- RawFiles, filelib:is_dir(X)],
     io:format("Dirs is ~p~n", [Dirs]),
     DeepFiles = [get_files(X)          || X <- Dirs],
+    io:format("DeepFiles is ~p~n", [DeepFiles]),
     [X || {X} <- Files ++ lists:flatten(DeepFiles)].
 
 generate_tests([], _GeneratedTestDir) -> ok;
