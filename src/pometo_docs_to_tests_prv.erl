@@ -9,6 +9,9 @@
 -define(GETTING_TEST,   2).
 -define(GETTING_RESULT, 3).
 
+-define(SPACE, 32).
+-define(UNDERSCORE, 95).
+
 -record(test, {
                seq        = 1,
                title      = "",
@@ -119,8 +122,8 @@ normalise(Text) ->
 norm2([], Acc) -> lists:reverse(Acc);
 norm2([H | T], Acc) when H >= 97 andalso H =< 122 ->
     norm2(T, [H | Acc]);
-norm2([" " | T], Acc) -> 
-    norm2(T, ["_" | Acc]);
+norm2([?SPACE | T], Acc) -> 
+    norm2(T, [?UNDERSCORE | Acc]);
 norm2([_H | T], Acc) ->
      norm2(T, Acc).
 
