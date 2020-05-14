@@ -186,7 +186,7 @@ make_runner() ->
 "   Got    = pometo_runtime:run_ast(Parsed, []),\n" ++
 "   ?_assertEqual(Got, Expected).\n" ++
 "\n" ++
-"defp parse(Tokenlist) ->\n" ++
+"parse(Tokenlist) ->\n" ++
 "    Parsed = pometo_parser:parse(Tokenlist)\n" ++
 "    case Parsed of\n" ++
 "        {ok,    Parse} -> Parse;\n" ++
