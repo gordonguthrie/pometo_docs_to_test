@@ -55,7 +55,7 @@ make_tests(App) ->
     ok = file:make_dir(GeneratedTestDir),
     DocsFiles = get_files(filename:join([Root, "docs", "*"])),
     io:format("DocsFiles is ~p~n", [DocsFiles]),
-    [generate_tests(X, GeneratedTestDir) || X <- DocsFiles],
+    [generate_tests(X, GeneratedTestDir) || {X} <- DocsFiles],
     ok.
 
 get_files(Root) ->
@@ -67,7 +67,7 @@ get_files(Root) ->
     io:format("Dirs is ~p~n", [Dirs]),
     DeepFiles = [get_files(X)          || X <- Dirs],
     io:format("DeepFiles is ~p~n", [DeepFiles]),
-    [X || {X} <- Files ++ lists:flatten(DeepFiles)].
+    [Files ++ lists:flatten(DeepFiles)].
 
 generate_tests([], _GeneratedTestDir) -> ok;
 generate_tests(File, GeneratedTestDir) ->
