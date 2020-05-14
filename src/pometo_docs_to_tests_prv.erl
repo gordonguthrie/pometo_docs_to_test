@@ -71,12 +71,13 @@ gen_test2(Filename, Lines) ->
     Header  = "-module(" ++ Filename ++ ").\n\n",
     Include = "-include_lib(\"eunit/include/eunit.hrl\").\n\n",
     Export  = "-compile([export_all]).\n\n",
+    io:format("about to gen tests~n"),
     Body = gen_test3(Lines, ?IN_TEXT, #test{}, []),
     Module = Header ++ Include ++ Export ++ Body,
     io:format("tests are ~p~n", [Module]),
     ok.
 
-gen_test3([], _, _, Acc) -> lists:flatten(lists:reverse(Acc));
+gen_test3([], _, _, Acc) -> lists:reverse(Acc);
 gen_test3(["## " ++ Title | T], ?IN_TEXT, Test, Acc) ->
     gen_test3(T, ?IN_TEXT, Test#test{title = Title}, Acc);
 gen_test3(["## " ++ Line | T], ?GETTING_RESULT, Test, Acc) ->
@@ -97,7 +98,10 @@ gen_test3(["```" ++ _Rest | T], ?GETTING_RESULT, Test, Acc) ->
 gen_test3(["```pometo" ++ _Rest | T], ?IN_TEXT, Test, Acc) ->
     gen_test3(T, ?GETTING_TEST, Test, Acc);
 gen_test3(["```" ++ _Rest | T], ?GETTING_TEST, Test, Acc) ->
-    gen_test3(T, ?IN_TEXT, Test, Acc).
+    gen_test3(T, ?IN_TEXT, Test, Acc);
+get_test3(A, B, C, D) ->
+    io:format("wigging out with ~p ~p ~p~n", [B, C, D]),
+    exit(99).
 
 make_test(Title, Seq, Code, Results) ->
 Title ++ "_" ++ Seq ++ "_test_() ->\n" ++
