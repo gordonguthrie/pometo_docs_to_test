@@ -53,7 +53,7 @@ make_tests(App) ->
     io:format("test dir is ~p~n", [GeneratedTestDir]),
     ok = del_dir(GeneratedTestDir),
     ok = file:make_dir(GeneratedTestDir),
-    DocsFiles = get_files(filename:join([Root, "docs", "*"])),
+    DocsFiles = lists:flatten(get_files(filename:join([Root, "docs", "*"]))),
     io:format("DocsFiles is ~p~n", [DocsFiles]),
     [generate_tests(X, GeneratedTestDir) || {X} <- DocsFiles],
     ok.
