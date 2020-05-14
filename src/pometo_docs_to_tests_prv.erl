@@ -59,8 +59,9 @@ make_tests(App) ->
 
 get_files(Root) ->
     RawFiles = filelib:wildcard(Root),
+    io:format("RawFiles is ~p in ~p~n", [RawFiles, Root]),
     Files     = [{X}                   || X <- RawFiles, filename:extension(X) == ".md"],
-    Dirs      = [X || X <- RawFiles, filelib:is_dir(X)],
+    Dirs      = [file:join(X, "*") || X <- RawFiles, filelib:is_dir(X)],
     io:format("Dirs is ~p~n", [Dirs]),
     DeepFiles = [get_files(X)          || X <- Dirs],
     [X || {X} <- Files ++ lists:flatten(DeepFiles)].
