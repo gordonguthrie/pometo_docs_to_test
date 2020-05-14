@@ -80,6 +80,8 @@ gen_test2(Filename, Lines) ->
 gen_test3([], _, _, Acc) -> lists:reverse(Acc);
 gen_test3(["## " ++ Title | T], ?IN_TEXT, Test, Acc) ->
     gen_test3(T, ?IN_TEXT, Test#test{title = Title}, Acc);
+gen_test3([_H | T], ?IN_TEXT, Test, Acc) ->
+    gen_test3(T, ?IN_TEXT, Test, Acc);
 gen_test3(["## " ++ Line | T], ?GETTING_RESULT, Test, Acc) ->
     #test{resultsacc = R} = Test,
     gen_test3(T, ?GETTING_RESULT, Test#test{resultsacc = [Line | R]}, Acc);
@@ -98,11 +100,7 @@ gen_test3(["```" ++ _Rest | T], ?GETTING_RESULT, Test, Acc) ->
 gen_test3(["```pometo" ++ _Rest | T], ?IN_TEXT, Test, Acc) ->
     gen_test3(T, ?GETTING_TEST, Test, Acc);
 gen_test3(["```" ++ _Rest | T], ?GETTING_TEST, Test, Acc) ->
-    gen_test3(T, ?IN_TEXT, Test, Acc);
-gen_test3(A, B, C, D) ->
-    io:format("A is ~p", [A]),
-    io:format("wigging out with ~p ~p ~p~n", [B, C, D]),
-    exit(99).
+    gen_test3(T, ?IN_TEXT, Test, Acc).
 
 make_test(Title, Seq, Code, Results) ->
 Title ++ "_" ++ Seq ++ "_test_() ->\n" ++
