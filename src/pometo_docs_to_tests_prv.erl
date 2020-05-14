@@ -130,7 +130,11 @@ norm2([_H | T], Acc) ->
      norm2(T, Acc).
 
 make_test(Title, Seq, Code, Results) ->
-Title ++ "_" ++ Seq ++ "_test_() ->\n" ++
+Title2 = case Title of
+    [] -> "anonymous";
+    _  -> Title
+end,
+Title2 ++ "_" ++ Seq ++ "_test_() ->\n" ++
     "    Code     = \"" ++ string:join(Code,    "\" ++\n    \"")    ++ "\",\n" ++
     "    Expected = \"" ++ string:join(Results, "\" ++\n    \"")    ++ "\",\n" ++
     "    run(Code, Expected).\n\n".
