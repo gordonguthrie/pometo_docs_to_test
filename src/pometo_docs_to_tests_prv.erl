@@ -48,7 +48,7 @@ format_error(Reason) ->
 
 make_tests(App) ->
     Root = rebar_app_info:dir(App),
-    io:format("making tests for ~p~n", [App]),
+    io:format("making tests for ~p~n", [Root]),
     GeneratedTestDir = filename:join([Root, "test", "generated_tests"]),
     io:format("test dir is ~p~n", [GeneratedTestDir]),
     ok = del_dir(GeneratedTestDir),
@@ -130,8 +130,8 @@ norm2([_H | T], Acc) ->
 
 make_test(Title, Seq, Code, Results) ->
 Title ++ "_" ++ Seq ++ "_test_() ->\n" ++
-    "Code = \"" ++ string:join(Code, "\n") ++ "\"," ++
-    "Expected = \"" ++ string:join(Results, "\n") ++ "\"," ++
+    "Code = \"" ++ string:join(Code, "\n") ++ "\",\n" ++
+    "Expected = \"" ++ string:join(Results, "\n") ++ "\",\n" ++
     "run(Code, Expected).".
 
 read_lines(File) ->
