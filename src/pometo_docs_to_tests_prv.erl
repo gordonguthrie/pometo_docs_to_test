@@ -82,8 +82,6 @@ gen_test3([], _, _, Acc) -> lists:reverse(Acc);
 gen_test3(["## " ++ Title | T], ?IN_TEXT, Test, Acc) ->
     io:format("in 1 ~p~n", [Title]),
     gen_test3(T, ?IN_TEXT, Test#test{title = Title}, Acc);
-gen_test3([_H | T], ?IN_TEXT, Test, Acc) ->
-    gen_test3(T, ?IN_TEXT, Test, Acc);
 gen_test3(["## " ++ Line | T], ?GETTING_RESULT, Test, Acc) ->
     io:format("in 3 ~p~n", [Line]),
     #test{resultsacc = R} = Test,
@@ -108,6 +106,8 @@ gen_test3(["```pometo" ++ _Rest | T], ?IN_TEXT, Test, Acc) ->
     gen_test3(T, ?GETTING_TEST, Test, Acc);
 gen_test3(["```" ++ _Rest | T], ?GETTING_TEST, Test, Acc) ->
     io:format("in 8~n"),
+    gen_test3(T, ?IN_TEXT, Test, Acc);
+gen_test3([_H | T], ?IN_TEXT, Test, Acc) ->
     gen_test3(T, ?IN_TEXT, Test, Acc).
 
 make_test(Title, Seq, Code, Results) ->
