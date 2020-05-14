@@ -99,7 +99,7 @@ gen_test3(["```pometo" ++ _Rest | T], ?IN_TEXT, Test, Acc) ->
     gen_test3(T, ?GETTING_TEST, Test, Acc);
 gen_test3(["```" ++ _Rest | T], ?GETTING_TEST, Test, Acc) ->
     gen_test3(T, ?IN_TEXT, Test, Acc);
-get_test3(A, B, C, D) ->
+gen_test3(_A, B, C, D) ->
     io:format("wigging out with ~p ~p ~p~n", [B, C, D]),
     exit(99).
 
