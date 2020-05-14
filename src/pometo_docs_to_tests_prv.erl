@@ -73,24 +73,30 @@ gen_test2(Filename, Lines) ->
     Export  = "-compile([export_all]).\n\n",
     io:format("about to gen tests~n"),
     Body = gen_test3(Lines, ?IN_TEXT, #test{}, []),
+    io:format("Body is ~p~n", [Body]),
     Module = Header ++ Include ++ Export ++ Body,
     io:format("tests are ~p~n", [Module]),
     ok.
 
 gen_test3([], _, _, Acc) -> lists:reverse(Acc);
 gen_test3(["## " ++ Title | T], ?IN_TEXT, Test, Acc) ->
+    io:format("in 1 ~p~n", [Title]),
     gen_test3(T, ?IN_TEXT, Test#test{title = Title}, Acc);
 gen_test3([_H | T], ?IN_TEXT, Test, Acc) ->
     gen_test3(T, ?IN_TEXT, Test, Acc);
 gen_test3(["## " ++ Line | T], ?GETTING_RESULT, Test, Acc) ->
+    io:format("in 3 ~p~n", [Line]),
     #test{resultsacc = R} = Test,
     gen_test3(T, ?GETTING_RESULT, Test#test{resultsacc = [Line | R]}, Acc);
 gen_test3(["## " ++ Line | T], ?GETTING_TEST, Test, Acc) ->
+    io:format("in 4 ~p~n", [Line]),
     #test{codeacc = C} = Test,
     gen_test3(T, ?GETTING_TEST, Test#test{codeacc = [Line | C]}, Acc);
 gen_test3(["```pometo_results" ++ _Rest | T], ?IN_TEXT, Test, Acc) ->
+    io:format("in 5~n"),
     gen_test3(T, ?GETTING_RESULT, Test, Acc);
 gen_test3(["```" ++ _Rest | T], ?GETTING_RESULT, Test, Acc) ->
+    io:format("in 6~n"),
     #test{seq        = N,
           title      = T,
           codeacc    = C,
@@ -98,8 +104,10 @@ gen_test3(["```" ++ _Rest | T], ?GETTING_RESULT, Test, Acc) ->
     NewTest = make_test(T, integer_to_list(N), lists:reverse(C), lists:reverse(R)),
     gen_test3(T, ?IN_TEXT, #test{seq = N + 1}, [NewTest| Acc]);
 gen_test3(["```pometo" ++ _Rest | T], ?IN_TEXT, Test, Acc) ->
+    io:format("in 7~n"),
     gen_test3(T, ?GETTING_TEST, Test, Acc);
 gen_test3(["```" ++ _Rest | T], ?GETTING_TEST, Test, Acc) ->
+    io:format("in 8~n"),
     gen_test3(T, ?IN_TEXT, Test, Acc).
 
 make_test(Title, Seq, Code, Results) ->
