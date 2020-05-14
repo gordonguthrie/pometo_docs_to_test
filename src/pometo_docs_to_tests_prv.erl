@@ -87,10 +87,10 @@ gen_test3(["```" ++ _Rest | T], ?GETTING_TEST, Test, Acc) ->
 gen_test3(["```" ++ _Rest | T], ?GETTING_RESULT, Test, Acc) ->
     io:format("in 6~n"),
     #test{seq        = N,
-          title      = T,
+          title      = Tt,
           codeacc    = C,
           resultsacc = R} = Test,
-    NewTest = make_test(T, integer_to_list(N), lists:reverse(C), lists:reverse(R)),
+    NewTest = make_test(Tt, integer_to_list(N), lists:reverse(C), lists:reverse(R)),
     gen_test3(T, ?IN_TEXT, #test{seq = N + 1}, [NewTest| Acc]);
 gen_test3([Line | T], ?GETTING_RESULT, Test, Acc) ->
     io:format("in 3 ~p~n", [Line]),
