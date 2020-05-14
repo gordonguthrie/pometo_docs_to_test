@@ -187,10 +187,10 @@ make_runner() ->
 "   ?_assertEqual(Got, Expected).\n" ++
 "\n" ++
 "parse(Tokenlist) ->\n" ++
-"    Parsed = pometo_parser:parse(Tokenlist)\n" ++
+"    Parsed = pometo_parser:parse(Tokenlist),\n" ++
 "    case Parsed of\n" ++
 "        {ok,    Parse} -> Parse;\n" ++
-"        {error, Error} -> ?debugFmt(\"Parser error ~p~n\", [Error])\n" ++
+"        {error, Error} -> ?debugFmt(\"Parser error ~p~n\", [Error]),\n" ++
 "                          \"error\"\n" ++
 "     end,\n" ++
 "  end.\n" ++
