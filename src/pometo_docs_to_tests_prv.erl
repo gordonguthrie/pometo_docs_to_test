@@ -178,7 +178,7 @@ make_runner() ->
 "run(Code, Expected) when is_list(Code) andalso is_list(Expected) ->\n" ++
 "   Tokens    = pometo_lexer:get_tokens(Code),\n" ++
 "   {ok, AST} = pometo_parser:parse(Tokens),\n" ++
-"   Got       = pometo_runtime.run_ast(AST, []),\n" ++
+"   Got       = pometo_runtime:run_ast(AST, []),\n" ++
 "   ?_assertEqual(Got, Expected).\n" ++
 "\n" ++
 "%\n" ++
