@@ -99,7 +99,9 @@ gen_test3(["```" ++ _Rest | T], ?GETTING_RESULT, Test, Acc) ->
           codeacc    = C,
           resultsacc = R} = Test,
     NewTest = make_test(Tt, integer_to_list(N), lists:reverse(C), lists:reverse(R)),
-    gen_test3(T, ?IN_TEXT, #test{seq = N + 1}, [NewTest| Acc]);
+    %%% we preserve the title, the sequence number will keep the test name different
+    %%% if there isn't another title given anyhoo
+    gen_test3(T, ?IN_TEXT, #test{seq = N + 1, title = Tt}, [NewTest| Acc]);
 gen_test3([Line | T], ?GETTING_RESULT, Test, Acc) ->
     #test{resultsacc = R} = Test,
     gen_test3(T, ?GETTING_RESULT, Test#test{resultsacc = [string:trim(Line) | R]}, Acc);
@@ -128,7 +130,6 @@ norm2([_H | T], Acc) ->
      norm2(T, Acc).
 
 make_test(Title, Seq, Code, Results) ->
-io:format("Code is ~p~n Results is ~p~n", [Code, Results]),
 Title ++ "_" ++ Seq ++ "_test_() ->\n" ++
     "    Code     = \"" ++ string:join(Code,    "\" ++\n    \"")    ++ "\",\n" ++
     "    Expected = \"" ++ string:join(Results, "\" ++\n    \"")    ++ "\",\n" ++
