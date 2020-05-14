@@ -50,7 +50,7 @@ make_tests(App) ->
     Root = rebar_app_info:dir(App),
     io:format("* making tests for ~p~n", [Root]),
     GeneratedTestDir = filename:join([Root, "test", "generated_tests"]),
-    io:format("* deleting the generated test directory is ~p~n", [GeneratedTestDir]),
+    io:format("* deleting the generated test directory ~p~n", [GeneratedTestDir]),
     ok = del_dir(GeneratedTestDir),
     ok = file:make_dir(GeneratedTestDir),
     DocsFiles = lists:flatten(get_files(filename:join([Root, "docs", "*"]))),
@@ -177,14 +177,24 @@ del_all_files([Dir | T], EmptyDirs) ->
 
 make_runner() ->
 "%\n" ++
-"% Test Runner\n" ++
+"% Test Runner and helper Fns\n" ++
 "%\n" ++
-"\n"
+"\n" ++
 "run(Code, Expected) when is_list(Code) andalso is_list(Expected) ->\n" ++
-"   Tokens    = pometo_lexer:get_tokens(Code),\n" ++
-"   {ok, AST} = pometo_parser:parse(Tokens),\n" ++
-"   Got       = pometo_runtime:run_ast(AST, []),\n" ++
+"   Tokens = pometo_lexer:get_tokens(Code),\n" ++
+"   Parsed = parse(Tokens),\n" ++
+"   Got    = pometo_runtime:run_ast(Parsed, []),\n" ++
 "   ?_assertEqual(Got, Expected).\n" ++
+"\n" ++
+"defp parse(Tokenlist) ->\n" ++
+"    Parsed = pometo_parser:parse(Tokenlist)\n" ++
+"    case Parsed of\n" ++
+"        {ok,    Parse} -> Parse;\n" ++
+"        {error, Error} -> ?debugFmt(\"Parser error ~p~n\", [Error])\n" ++
+"                          \"error\"\n" ++
+"     end,\n" ++
+"  end.\n" ++
+
 "\n" ++
 "%\n" ++
 "% Tests\n" ++
