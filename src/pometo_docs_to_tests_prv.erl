@@ -130,8 +130,8 @@ norm2([_H | T], Acc) ->
 make_test(Title, Seq, Code, Results) ->
 io:format("Code is ~p~n Results is ~p~n", [Code, Results]),
 Title ++ "_" ++ Seq ++ "_test_() ->\n" ++
-    "    Code = \"" ++ string:join(Code, "\n") ++ "\",\n" ++
-    "    Expected = \"" ++ string:join(Results, "\n") ++ "\",\n" ++
+    "    Code     = \"" ++ string:trim(lists:flatten(Code))    ++ "\",\n" ++
+    "    Expected = \"" ++ string:trim(lists:flatten(Results)) ++ "\",\n" ++
     "    run(Code, Expected).".
 
 read_lines(File) ->
