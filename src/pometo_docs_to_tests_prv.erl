@@ -128,10 +128,11 @@ norm2([_H | T], Acc) ->
      norm2(T, Acc).
 
 make_test(Title, Seq, Code, Results) ->
+io:format("Code is ~p~n Results is ~p~n", [Code, Results]),
 Title ++ "_" ++ Seq ++ "_test_() ->\n" ++
-    "Code = \"" ++ string:join(Code, "\n") ++ "\",\n" ++
-    "Expected = \"" ++ string:join(Results, "\n") ++ "\",\n" ++
-    "run(Code, Expected).".
+    "    Code = \"" ++ string:join(Code, "\n") ++ "\",\n" ++
+    "    Expected = \"" ++ string:join(Results, "\n") ++ "\",\n" ++
+    "    run(Code, Expected).".
 
 read_lines(File) ->
     case file:open(File, read) of
@@ -178,7 +179,7 @@ make_runner() ->
 "   Tokens    = pometo_lexer:get_tokens(Code),\n" ++
 "   {ok, AST} = pometo_parser:parse(Tokens),\n" ++
 "   Got = :pometo_runtime.run_ast(AST, [])\n," ++
-"   ?_assert(Got, Expected).\n" ++
+"   ?_assertEqual(Got, Expected).\n" ++
 "\n" ++
 "%\n" ++
 "% Tests\n" ++
