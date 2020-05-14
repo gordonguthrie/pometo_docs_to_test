@@ -68,14 +68,16 @@ generate_tests(File) ->
     ok.
 
 gen_test2(Filename, Lines) ->
-    Header  = "-module(" ++ Filename ++ ").\n\n",
-    Include = "-include_lib(\"eunit/include/eunit.hrl\").\n\n",
-    Export  = "-compile([export_all]).\n\n",
-    io:format("about to gen tests~n"),
     Body = gen_test3(Lines, ?IN_TEXT, #test{}, []),
-    io:format("Body is ~p~n", [Body]),
-    Module = Header ++ Include ++ Export ++ Body,
-    io:format("tests are ~p~n", [Module]),
+    case Body of
+        [] -> ok;
+        _  -> io:format("Body is ~p~n", [Body]),
+              Header  = "-module(" ++ Filename ++ ").\n\n",
+              Include = "-include_lib(\"eunit/include/eunit.hrl\").\n\n",
+              Export  = "-compile([export_all]).\n\n",
+              Module = Header ++ Include ++ Export ++ Body,
+              io:format("tests are ~p~n", [Module])
+    end,
     ok.
 
 gen_test3([], _, _, Acc) -> lists:reverse(Acc);
