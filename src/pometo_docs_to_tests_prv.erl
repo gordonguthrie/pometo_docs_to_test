@@ -182,9 +182,10 @@ make_runner() ->
 "\n" ++
 "run(Code, Expected) when is_list(Code) andalso is_list(Expected) ->\n" ++
 "    Got = try\n" ++
-"        Tokens = pometo_lexer:get_tokens(Code),\n" ++
-"        Parsed = parse(Tokens),\n" ++
-"        pometo_runtime:run_ast(Parsed, [])\n" ++
+"        Tokens  = pometo_lexer:get_tokens(Code),\n" ++
+"        Parsed  = parse(Tokens),\n" ++
+"        Results = pometo_runtime:run_ast(Parsed, [])\n" ++
+"        pometo_runtime:format(Results)\n" ++
 "    catch Type:Error -> ?debugFmt(\"Test failed to run ~p:~p\", [Type, Error]),\n" ++
 "                        {error, \"test failed to run\"}\n" ++
 "    end,\n" ++
