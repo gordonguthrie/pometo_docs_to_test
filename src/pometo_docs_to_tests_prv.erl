@@ -50,8 +50,11 @@ make_tests(App) ->
     Root = rebar_app_info:dir(App),
     io:format("* making tests for ~p~n", [Root]),
     GeneratedTestDir = filename:join([Root, "test", "generated_tests"]),
-    io:format("* deleting the generated test directory ~p~n", [GeneratedTestDir]),
-    ok = del_dir(GeneratedTestDir),
+    case filelib:is_dir(GeneratedTestDir) of
+      true  -> io:format("* deleting the generated test directory ~p~n", [GeneratedTestDir]),
+               ok = del_dir(GeneratedTestDir);
+      false -> ok
+    end,
     ok = file:make_dir(GeneratedTestDir),
     DocsFiles = lists:flatten(get_files(filename:join([Root, "docs", "*"]))),
     [generate_tests(X, GeneratedTestDir) || {X} <- DocsFiles],
