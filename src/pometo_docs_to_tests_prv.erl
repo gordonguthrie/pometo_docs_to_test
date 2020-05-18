@@ -184,7 +184,9 @@ make_runner() ->
 "    Got = try\n" ++
 "        Tokens               = pometo_lexer:get_tokens(Code),\n" ++
 "        Parsed               = parse(Tokens),\n" ++
-"        {Results, _Bindings} = pometo_runtime:run_ast(Parsed, []),\n" ++
+"        Return = pometo_runtime:run_ast(Parsed, []),\n" ++
+"        >debugFmt(\"Return is ~p~n\", [Return]),\n" ++
+"        {Results, _Bindings} = Return,\n" ++
 "        lists:flatten(pometo_runtime:format(Results))\n" ++
 "    catch Type:Error -> ?debugFmt(\"Test failed to run ~p:~p\", [Type, Error]),\n" ++
 "                        {error, \"test failed to run\"}\n" ++
