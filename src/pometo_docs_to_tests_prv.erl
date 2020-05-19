@@ -85,8 +85,7 @@ gen_test2(Filename, Lines, GeneratedTestDir) ->
               Header     = "-module(" ++ Filename ++ ").\n\n",
               Include    = "-include_lib(\"eunit/include/eunit.hrl\").\n\n",
               Export     = "-compile([export_all]).\n\n",
-              Runner     = make_runner(),
-              Module = Disclaimer ++ Header ++ Include ++ Export ++ Runner ++ Body,
+              Module = Disclaimer ++ Header ++ Include ++ Export ++ Body,
               DirAndFile = string:join([GeneratedTestDir, Filename ++ ".erl"], "/"),
               ok = file:write_file(DirAndFile, Module)
 
@@ -140,7 +139,7 @@ end,
 Title2 ++ "_" ++ Seq ++ "_test_() ->\n" ++
     "    Code     = \"" ++ string:join(Code,    "\" ++\n    \"")    ++ "\",\n" ++
     "    Expected = \"" ++ string:join(Results, "\" ++\n    \"")    ++ "\",\n" ++
-    "    run(Code, Expected).\n\n".
+    "    pometo_test_helper:run(Code, Expected).\n\n".
 
 read_lines(File) ->
     case file:open(File, read) of
@@ -177,35 +176,3 @@ del_all_files([Dir | T], EmptyDirs) ->
                          ok = file:delete(F)
                  end, Files),
    del_all_files(T ++ Dirs, [Dir | EmptyDirs]).
-
-make_runner() ->
-"%\n" ++
-"% Test Runner and helper Fns\n" ++
-"%\n" ++
-"\n" ++
-"run(Code, Expected) when is_list(Code) andalso is_list(Expected) ->\n" ++
-"    Got = try\n" ++
-"        Tokens               = pometo_lexer:get_tokens(Code),\n" ++
-"        Parsed               = parse(Tokens),\n" ++
-"        {Results, _Bindings} = pometo_runtime:run_ast(Parsed, []),\n" ++
-"        lists:flatten(pometo_runtime:format(Results))\n" ++
-"    catch Type:Error -> ?debugFmt(\"Test failed to run ~p:~p\", [Type, Error]),\n" ++
-"                        {error, \"test failed to run\"}\n" ++
-"    end,\n" ++
-"    ?_assertEqual(Expected, Got).\n" ++
-"\n" ++
-"parse(Tokenlist) ->\n" ++
-"    Parsed = pometo_parser:parse(Tokenlist),\n" ++
-"    case Parsed of\n" ++
-"        {ok,    Parse} -> Parse;\n" ++
-"        {error, Error} -> ?debugFmt(\"Parser error ~p~n\", [Error]),\n" ++
-"                          \"error\"\n" ++
-"    end.\n" ++
-
-"\n" ++
-"%\n" ++
-"% Tests\n" ++
-"%\n" ++
-"\n".
-
-
