@@ -143,11 +143,12 @@ make_test(Title, Type, Seq, Code, Results) ->
     "    Expected = \"" ++ string:join(Results, "\" ++\n    \"")    ++ "\",\n",
   Call = case Type of
     "interpreter" ->
-      "    pometo_test_helper:run_" ++ Type ++ "_test(Code, Expected).\n\n";
+      "    Got = pometo_test_helper:run_" ++ Type ++ "_test(Code),\n";
     "compiler" ->
-      "    pometo_test_helper:run_" ++ Type ++ "_test(" ++ NameRoot ++ ", Code, Expected).\n\n"
+      "    Got = pometo_test_helper:run_" ++ Type ++ "_test(`" ++ NameRoot ++ "`, Code),\n"
     end,
-  Main ++ Call.
+  Assert = "?_assertEqual(Expected, Got).\n\n",
+  Main ++ Call ++ Assert.
 
 read_lines(File) ->
     case file:open(File, read) of
