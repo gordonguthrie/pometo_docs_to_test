@@ -100,10 +100,11 @@ gen_test3(["```" ++ _Rest | T], ?GETTING_RESULT, Test, Acc) ->
           title      = Tt,
           codeacc    = C,
           resultsacc = R} = Test,
-    NewTest = make_test(Tt, integer_to_list(N), lists:reverse(C), lists:reverse(R)),
+    NewTest1 = make_test(Tt, "interpreter", integer_to_list(N), lists:reverse(C), lists:reverse(R)),
+    NewTest2 = make_test(Tt, "compiler", integer_to_list(N), lists:reverse(C), lists:reverse(R)),
     %%% we preserve the title, the sequence number will keep the test name different
     %%% if there isn't another title given anyhoo
-    gen_test3(T, ?IN_TEXT, #test{seq = N + 1, title = Tt}, [NewTest| Acc]);
+    gen_test3(T, ?IN_TEXT, #test{seq = N + 1, title = Tt}, [NewTest2, NewTest1 | Acc]);
 gen_test3([Line | T], ?GETTING_RESULT, Test, Acc) ->
     #test{resultsacc = R} = Test,
     gen_test3(T, ?GETTING_RESULT, Test#test{resultsacc = [string:trim(Line) | R]}, Acc);
@@ -131,7 +132,7 @@ norm2([?SPACE | T], Acc) ->
 norm2([_H | T], Acc) ->
      norm2(T, Acc).
 
-make_test(Title, Seq, Code, Results) ->
+make_test(Title, Type, Seq, Code, Results) ->
 Title2 = case Title of
     [] -> "anonymous";
     _  -> Title
@@ -139,7 +140,7 @@ end,
 Title2 ++ "_" ++ Seq ++ "_test_() ->\n" ++
     "    Code     = \"" ++ string:join(Code,    "\" ++\n    \"")    ++ "\",\n" ++
     "    Expected = \"" ++ string:join(Results, "\" ++\n    \"")    ++ "\",\n" ++
-    "    pometo_test_helper:run(Code, Expected).\n\n".
+    "    pometo_test_helper:run_" ++ Type ++ "_test(Code, Expected).\n\n".
 
 read_lines(File) ->
     case file:open(File, read) of
