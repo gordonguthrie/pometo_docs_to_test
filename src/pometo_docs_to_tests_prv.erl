@@ -145,7 +145,7 @@ make_test(Title, Type, Seq, Code, Results) ->
     "interpreter" ->
       "    Got = pometo_test_helper:run_" ++ Type ++ "_test(Code),\n";
     "compiler" ->
-      "    Got = pometo_test_helper:run_" ++ Type ++ "_test(`" ++ NameRoot ++ "`, Code),\n"
+      "    Got = pometo_test_helper:run_" ++ Type ++ "_test('" ++ NameRoot ++ "', Code),\n"
     end,
   Assert = "?_assertEqual(Expected, Got).\n\n",
   Main ++ Call ++ Assert.
