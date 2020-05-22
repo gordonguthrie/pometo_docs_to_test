@@ -133,14 +133,21 @@ norm2([_H | T], Acc) ->
      norm2(T, Acc).
 
 make_test(Title, Type, Seq, Code, Results) ->
-Title2 = case Title of
+  Title2 = case Title of
     [] -> "anonymous";
     _  -> Title
-end,
-Title2 ++ "_" ++ Seq ++ "_" ++ Type ++ "_test_() ->\n" ++
+  end,
+  NameRoot = Title2 ++ "_" ++ Seq,
+  Main =  NameRoot++ "_" ++ Type ++ "_test_() ->\n"
     "    Code     = \"" ++ string:join(Code,    "\" ++\n    \"")    ++ "\",\n" ++
-    "    Expected = \"" ++ string:join(Results, "\" ++\n    \"")    ++ "\",\n" ++
-    "    pometo_test_helper:run_" ++ Type ++ "_test(Code, Expected).\n\n".
+    "    Expected = \"" ++ string:join(Results, "\" ++\n    \"")    ++ "\",\n",
+  Call = case Title of
+    "interpreter" ->
+      "    pometo_test_helper:run_" ++ Type ++ "_test(Code, Expected).\n\n";
+    "compiler" ->
+      "    pometo_test_helper:run_" ++ Type ++ "_test(" ++ NameRoot ++ ", Code, Expected).\n\n"
+    end,
+  Main ++ Call.
 
 read_lines(File) ->
     case file:open(File, read) of
