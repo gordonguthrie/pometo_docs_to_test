@@ -137,7 +137,7 @@ Title2 = case Title of
     [] -> "anonymous";
     _  -> Title
 end,
-Title2 ++ "_" ++ Seq ++ "_test_() ->\n" ++
+Title2 ++ "_" ++ Seq ++ "_" ++ Type ++ "_test_() ->\n" ++
     "    Code     = \"" ++ string:join(Code,    "\" ++\n    \"")    ++ "\",\n" ++
     "    Expected = \"" ++ string:join(Results, "\" ++\n    \"")    ++ "\",\n" ++
     "    pometo_test_helper:run_" ++ Type ++ "_test(Code, Expected).\n\n".
