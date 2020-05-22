@@ -141,7 +141,7 @@ make_test(Title, Type, Seq, Code, Results) ->
   Main =  NameRoot++ "_" ++ Type ++ "_test_() ->\n"
     "    Code     = \"" ++ string:join(Code,    "\" ++\n    \"")    ++ "\",\n" ++
     "    Expected = \"" ++ string:join(Results, "\" ++\n    \"")    ++ "\",\n",
-  Call = case Title of
+  Call = case Type of
     "interpreter" ->
       "    pometo_test_helper:run_" ++ Type ++ "_test(Code, Expected).\n\n";
     "compiler" ->
