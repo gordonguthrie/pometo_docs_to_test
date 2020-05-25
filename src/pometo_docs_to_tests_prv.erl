@@ -57,6 +57,7 @@ make_tests(App) ->
     end,
     ok = file:make_dir(GeneratedTestDir),
     DocsFiles = lists:flatten(get_files(filename:join([Root, "docs", "*"]))),
+    io:format("DocsFiles is ~p~n", [DocsFiles]),
     [generate_tests(X, GeneratedTestDir) || {X} <- DocsFiles],
     ok.
 
@@ -65,6 +66,7 @@ get_files(Root) ->
     Files     = [{X}                   || X <- RawFiles, filename:extension(X) == ".md"],
     Dirs      = [filename:join(X, "*") || X <- RawFiles, filelib:is_dir(X)],
     DeepFiles = [get_files(X)          || X <- Dirs],
+    io:format("RawFiles is ~p~nFiles is ~p~nDirs is ~p~n", [RawFiles, Dirs, DeepFiles]),
     [Files ++ lists:flatten(DeepFiles)].
 
 generate_tests([], _GeneratedTestDir) -> ok;
@@ -127,7 +129,7 @@ normalise(Text) ->
 norm2([], Acc) -> lists:reverse(Acc);
 norm2([H | T], Acc) when H >= 97 andalso H =< 122 ->
     norm2(T, [H | Acc]);
-norm2([?SPACE | T], Acc) -> 
+norm2([?SPACE | T], Acc) ->
     norm2(T, [?UNDERSCORE | Acc]);
 norm2([_H | T], Acc) ->
      norm2(T, Acc).
