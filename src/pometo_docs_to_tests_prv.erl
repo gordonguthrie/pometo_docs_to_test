@@ -139,7 +139,7 @@ make_test(Title, Type, Seq, Code, Results) ->
   NameRoot = Title2 ++ "_" ++ Seq,
   Main =  NameRoot++ "_" ++ Type ++ "_test_() ->\n"
     "    Code     = \"" ++ string:join(Code,    "\" ++\n    \"")    ++ "\",\n" ++
-    "    Expected = \"" ++ string:join(Results, "\" ++\n    \"")    ++ "\",\n",
+    "    Expected = \"" ++ Results ++ "\",\n",
   Include = "-include_lib(\"eunit/include/eunit.hrl\").\n\n",
   Call = case Type of
     "interpreter" ->
