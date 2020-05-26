@@ -146,7 +146,7 @@ make_test(Title, Type, Seq, Code, Results) ->
     "compiler" ->
       "    Got = pometo_test_helper:run_" ++ Type ++ "_test('" ++ NameRoot ++ "', Code),\n"
     end,
-  Printing = "    ?debugFmt(\"Exp:~n~p~nGot:~p~n\", [Expected, Got]),\n",
+  Printing = "    ?debugFmt(\"Exp:~n~ts~nGot:~ts~n\", [Expected, Got]),\n",
   Assert = "    ?_assertEqual(Expected, Got).\n\n",
   Main ++ Call ++ Printing ++ Assert.
 
