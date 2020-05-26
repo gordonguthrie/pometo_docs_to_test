@@ -140,7 +140,6 @@ make_test(Title, Type, Seq, Code, Results) ->
   Main =  NameRoot++ "_" ++ Type ++ "_test_() ->\n"
     "    Code     = \"" ++ string:join(Code,    "\" ++\n    \"")    ++ "\",\n" ++
     "    Expected = \"" ++ Results ++ "\",\n",
-  Include = "-include_lib(\"eunit/include/eunit.hrl\").\n\n",
   Call = case Type of
     "interpreter" ->
       "    Got = pometo_test_helper:run_" ++ Type ++ "_test(Code),\n";
@@ -149,7 +148,7 @@ make_test(Title, Type, Seq, Code, Results) ->
     end,
   Printing = "?debugFmt(\"Exp:~n~p~nGot:~p~n\", [Exp, Got]),\n",
   Assert = "?_assertEqual(Expected, Got).\n\n",
-  Main ++ Include ++ Call ++ Printing ++ Assert.
+  Main ++ Call ++ Printing ++ Assert.
 
 read_lines(File) ->
     case file:open(File, read) of
