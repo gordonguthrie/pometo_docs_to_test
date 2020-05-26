@@ -99,8 +99,8 @@ gen_test3(["```" ++ _Rest | T], ?GETTING_RESULT, Test, Acc) ->
           title      = Tt,
           codeacc    = C,
           resultsacc = R} = Test,
-    NewTest1 = make_test(Tt, "interpreter", integer_to_list(N), lists:reverse(C), lists:reverse(R)),
-    NewTest2 = make_test(Tt, "compiler", integer_to_list(N), lists:reverse(C), lists:reverse(R)),
+    NewTest1 = make_test(Tt, "interpreter", integer_to_list(N), lists:reverse(C), string:join(lists:reverse(R), "\n")),
+    NewTest2 = make_test(Tt, "compiler",    integer_to_list(N), lists:reverse(C), lists:reverse(R)),
     %%% we preserve the title, the sequence number will keep the test name different
     %%% if there isn't another title given anyhoo
     gen_test3(T, ?IN_TEXT, #test{seq = N + 1, title = Tt}, [NewTest2, NewTest1 | Acc]);
@@ -140,14 +140,16 @@ make_test(Title, Type, Seq, Code, Results) ->
   Main =  NameRoot++ "_" ++ Type ++ "_test_() ->\n"
     "    Code     = \"" ++ string:join(Code,    "\" ++\n    \"")    ++ "\",\n" ++
     "    Expected = \"" ++ string:join(Results, "\" ++\n    \"")    ++ "\",\n",
+  Include = "-include_lib(\"eunit/include/eunit.hrl\").\n\n",
   Call = case Type of
     "interpreter" ->
       "    Got = pometo_test_helper:run_" ++ Type ++ "_test(Code),\n";
     "compiler" ->
       "    Got = pometo_test_helper:run_" ++ Type ++ "_test('" ++ NameRoot ++ "', Code),\n"
     end,
+  Printing = "?debugFmt(\"Exp:~n~p~nGot:~p~n\", [Exp, Got]),\n",
   Assert = "?_assertEqual(Expected, Got).\n\n",
-  Main ++ Call ++ Assert.
+  Main ++ Include ++ Call ++ Printing ++ Assert.
 
 read_lines(File) ->
     case file:open(File, read) of
