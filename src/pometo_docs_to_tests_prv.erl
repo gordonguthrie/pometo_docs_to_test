@@ -138,7 +138,7 @@ make_test(Title, Type, Seq, Code, Results) ->
   end,
   NameRoot = Title2 ++ "_" ++ Seq,
   Main = NameRoot ++ "_" ++ Type ++ "_test_() ->\n" ++
-    "    Code     = [\"" ++ string:join(Code,    "\",    ++ \n    \"") ++ "\"],\n" ++
+    "    Code     = [\"" ++ string:join(Code,    "\",\n    \"") ++ "\"],\n" ++
     "    Expected = \"" ++ string:join(Results, "\\n\" ++ \n    \"") ++ "\",\n",
   Call = case Type of
     "interpreter" ->
