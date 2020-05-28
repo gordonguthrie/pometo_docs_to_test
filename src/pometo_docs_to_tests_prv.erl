@@ -138,7 +138,7 @@ make_test(Title, Type, Seq, Code, Results) ->
   end,
   NameRoot = Title2 ++ "_" ++ Seq,
   Main = NameRoot ++ "_" ++ Type ++ "_test_() ->\n" ++
-    "    Code     = \"" ++ string:join(Code,    "\"    ++ \n    \"") ++ "\",\n" ++
+    "    Code     = [\"" ++ string:join(Code,    "\",    ++ \n    \"") ++ "\"],\n" ++
     "    Expected = \"" ++ string:join(Results, "\\n\" ++ \n    \"") ++ "\",\n",
   Call = case Type of
     "interpreter" ->
@@ -147,7 +147,7 @@ make_test(Title, Type, Seq, Code, Results) ->
       "    Got = pometo_test_helper:run_" ++ Type ++ "_test('" ++ NameRoot ++ "', Code),\n"
     end,
   Printing = "    ?debugFmt(\"~nExp:~n~ts~nGot:~ts~n\", [string:trim(Expected), string:trim(Got)]),\n",
-  Assert = "    ?_assertEqual(string:trim(Expected), string:trim(Got)).\n\n",
+  Assert   = "    ?_assertEqual(string:trim(Expected), string:trim(Got)).\n\n",
   Main ++ Call ++ Printing ++ Assert.
 
 read_lines(File) ->
