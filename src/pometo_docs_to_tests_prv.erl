@@ -136,8 +136,8 @@ make_test(Title, Type, Seq, Code, Results) ->
     [] -> "anonymous";
     _  -> Title
   end,
-  NameRoot = Title2 ++ "_" ++ Seq,
-  Main = NameRoot ++ "_" ++ Type ++ "_test_() ->\n" ++
+  NameRoot = Title2 ++ "_" ++ Seq ++ "_" ++ Type,
+  Main = NameRoot ++ "_test_() ->\n" ++
     "    Code     = [\"" ++ string:join(Code,    "\",\n    \"") ++ "\"],\n" ++
     "    Expected = \"" ++ string:join(Results, "\\n\" ++ \n    \"") ++ "\",\n",
   Call = case Type of
@@ -146,7 +146,7 @@ make_test(Title, Type, Seq, Code, Results) ->
     "compiler" ->
       "    Got = pometo_test_helper:run_" ++ Type ++ "_test('" ++ NameRoot ++ "', Code),\n"
     end,
-  Printing = "    ?debugFmt(\"~nExp:~n~ts~nGot:~ts~n\", [string:trim(Expected), string:trim(Got)]),\n",
+  Printing = "    ?debugFmt(\" in " ++ NameRoot ++ "~nExp:~n~ts~nGot:~ts~n\", [string:trim(Expected), string:trim(Got)]),\n",
   Assert   = "    ?_assertEqual(string:trim(Expected), string:trim(Got)).\n\n",
   Main ++ Call ++ Printing ++ Assert.
 
