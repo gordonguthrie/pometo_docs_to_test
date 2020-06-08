@@ -144,7 +144,7 @@ make_test(Title, Type, Seq, Code, Results) ->
     "interpreter" ->
       "    Got = pometo_test_helper:run_" ++ Type ++ "_test(Code),\n";
     "compiler" ->
-      "    Got = pometo_test_helper:run_" ++ Type ++ "_test('" ++ NameRoot ++ "', Code),\n"
+      "    Got = pometo_test_helper:run_" ++ Type ++ "_test(\"" ++ NameRoot ++ "\", Code),\n"
     end,
   Printing = "    ?debugFmt(\" in " ++ NameRoot ++ "~nExp:~n~ts~nGot:~ts~n\", [string:trim(Expected), string:trim(Got)]),\n",
   Assert   = "    ?_assertEqual(string:trim(Expected), string:trim(Got)).\n\n",
