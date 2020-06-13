@@ -69,9 +69,8 @@ get_files(Root) ->
 generate_tests([], _GeneratedTestDir) -> ok;
 generate_tests(File, GeneratedTestDir) ->
     {ok, Lines} = read_lines(File),
-    Hash = binary:bin_to_list(base16:encode(crypto:hash(sha, Lines))),
     Basename = filename:basename(File, ".md"),
-    FileName = Basename ++ "_" ++ Hash ++ "_tests",
+    FileName = Basename ++ "_tests",
     gen_test2(FileName, Lines, GeneratedTestDir),
     ok.
 
@@ -87,7 +86,6 @@ gen_test2(Filename, Lines, GeneratedTestDir) ->
               Module = Disclaimer ++ Header ++ Include ++ Export ++ Body,
               DirAndFile = string:join([GeneratedTestDir, Filename ++ ".erl"], "/"),
               ok = file:write_file(DirAndFile, Module)
-
     end,
     ok.
 
