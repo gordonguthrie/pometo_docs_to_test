@@ -104,10 +104,10 @@ gen_test3(["```" ++ _Rest | T], ?GETTING_RESULT, Test, Acc) ->
     gen_test3(T, ?IN_TEXT, #test{seq = N + 1, title = Tt}, [NewTest2, NewTest1 | Acc]);
 gen_test3([Line | T], ?GETTING_RESULT, Test, Acc) ->
     #test{resultsacc = R} = Test,
-    gen_test3(T, ?GETTING_RESULT, Test#test{resultsacc = [string:trim(Line) | R]}, Acc);
+    gen_test3(T, ?GETTING_RESULT, Test#test{resultsacc = [Line | R]}, Acc);
 gen_test3([Line | T], ?GETTING_TEST, Test, Acc) ->
     #test{codeacc = C} = Test,
-    gen_test3(T, ?GETTING_TEST, Test#test{codeacc = [string:trim(Line) | C]}, Acc);
+    gen_test3(T, ?GETTING_TEST, Test#test{codeacc = [Line | C]}, Acc);
 gen_test3(["```pometo_results" ++ _Rest | T], ?IN_TEXT, Test, Acc) ->
     gen_test3(T, ?GETTING_RESULT, Test, Acc);
 gen_test3(["```pometo" ++ _Rest | T], ?IN_TEXT, Test, Acc) ->
