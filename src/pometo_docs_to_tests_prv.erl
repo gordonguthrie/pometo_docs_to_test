@@ -130,7 +130,7 @@ gen_test3(["```pometo" ++ _Rest | T], ?IN_TEXT, Test, Acc) ->
         %%% if there isn't another title given anyhoo
         gen_test3(T, ?GETTING_TEST, #test{seq = N + 1, title = Tt}, [NewTest3, NewTest2, NewTest1 | Acc])
     end;
-gen_test3(["```" ++ _Rest | T], ?GETTING_TEST, Test, Acc) ->
+gen_test3(["```" ++ _Rest | T], _, Test, Acc) ->
     io:format("in gen_test3 (5) Test is ~p~n", [Test]),
     gen_test3(T, ?IN_TEXT, Test, Acc);
 gen_test3([Line | T], ?GETTING_RESULT, Test, Acc) ->
@@ -150,7 +150,6 @@ gen_test3(["## " ++ Title | T], ?IN_TEXT, Test, Acc) ->
     NewTitle = normalise(Title),
     gen_test3(T, ?IN_TEXT, Test#test{title = NewTitle}, Acc);
 gen_test3([_H | T], ?IN_TEXT, Test, Acc) ->
-    io:format("in gen_test3 (10) discard <~p>~n", [_H]),
     io:format("in gen_test3 (10) discard <~ts>~n", [_H]),
     gen_test3(T, ?IN_TEXT, Test, Acc).
 
