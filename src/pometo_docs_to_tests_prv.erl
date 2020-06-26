@@ -99,6 +99,8 @@ gen_test2(Filename, Lines, GeneratedTestDir) ->
 %% as then the first failing test you should fix appears at the bottom
 gen_test3([], _, _, Acc) -> lists:flatten(Acc);
 gen_test3(["```" ++ _Rest | T], ?GETTING_TEST, Test, Acc) ->
+    gen_test3(T, ?IN_TEXT, Test, Acc);
+gen_test3(["```pometo" ++ _Rest | T], ?IN_TEXT, Test, Acc) ->
     io:format("in gen_test3 (2) Test is ~p~n", [Test]),
     #test{seq        = N,
           title      = Tt,
@@ -108,21 +110,21 @@ gen_test3(["```" ++ _Rest | T], ?GETTING_TEST, Test, Acc) ->
     % we only ocassionally get different lazy results
     case {C, R, L} of
       {[], [], []} ->
-        gen_test3(T, ?IN_TEXT, Test, Acc);
+        gen_test3(T, ?GETTING_TEST, Test, Acc);
       {_, _, []} ->
         NewTest1 = make_test(Tt, "interpreter",   integer_to_list(N), lists:reverse(C), lists:reverse(R)),
         NewTest2 = make_test(Tt, "compiler",      integer_to_list(N), lists:reverse(C), lists:reverse(R)),
         NewTest3 = make_test(Tt, "compiler_lazy", integer_to_list(N), lists:reverse(C), lists:reverse(R)),
         %%% we preserve the title, the sequence number will keep the test name different
         %%% if there isn't another title given anyhoo
-        gen_test3(T, ?IN_TEXT, #test{seq = N + 1, title = Tt}, [NewTest3, NewTest2, NewTest1 | Acc]);
+        gen_test3(T, ?GETTING_TEST, #test{seq = N + 1, title = Tt}, [NewTest3, NewTest2, NewTest1 | Acc]);
       {_, _, _} ->
         NewTest1 = make_test(Tt, "interpreter",   integer_to_list(N), lists:reverse(C), lists:reverse(R)),
         NewTest2 = make_test(Tt, "compiler",      integer_to_list(N), lists:reverse(C), lists:reverse(R)),
         NewTest3 = make_test(Tt, "compiler_lazy", integer_to_list(N), lists:reverse(C), lists:reverse(L)),
         %%% we preserve the title, the sequence number will keep the test name different
         %%% if there isn't another title given anyhoo
-        gen_test3(T, ?IN_TEXT, #test{seq = N + 1, title = Tt}, [NewTest3, NewTest2, NewTest1 | Acc])
+        gen_test3(T, ?GETTING_TEST, #test{seq = N + 1, title = Tt}, [NewTest3, NewTest2, NewTest1 | Acc])
     end;
 gen_test3([Line | T], ?GETTING_RESULT, Test, Acc) ->
     io:format("in gen_test3 (3) ~ts~n", [Line]),
@@ -139,9 +141,6 @@ gen_test3([Line | T], ?GETTING_TEST, Test, Acc) ->
 gen_test3(["```pometo_results" ++ _Rest | T], ?IN_TEXT, Test, Acc) ->
     io:format("in gen_test3 (6) pometo_results~n", []),
     gen_test3(T, ?GETTING_RESULT, Test, Acc);
-gen_test3(["```pometo" ++ _Rest | T], ?IN_TEXT, Test, Acc) ->
-    io:format("in gen_test3 (7) pometo~n", []),
-    gen_test3(T, ?GETTING_TEST, Test, Acc);
 gen_test3(["```pometo_lazy" ++ _Rest | T], ?IN_TEXT, Test, Acc) ->
     io:format("in gen_test3 (8) pometo_lazy~n", []),
     gen_test3(T, ?GETTING_LAZY, Test, Acc);
