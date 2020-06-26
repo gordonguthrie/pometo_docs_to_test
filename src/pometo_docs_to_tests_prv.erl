@@ -172,6 +172,8 @@ make_test(Title, Type, Seq, Code, Results) ->
     "compiler" ->
       "    Got = pometo_test_helper:run_" ++ Type ++ "_test(\"" ++ NameRoot ++ "\", Code),\n";
     "compiler_lazy" ->
+      "    Got = pometo_test_helper:run_" ++ Type ++ "_test(\"" ++ NameRoot ++ "\", Code),\n";
+    "compiler_indexed" ->
       "    Got = pometo_test_helper:run_" ++ Type ++ "_test(\"" ++ NameRoot ++ "\", Code),\n"
     end,
   Printing = "    % ?debugFmt(\" in " ++ NameRoot ++ "(" ++ Type ++ ")~nCode:~n~ts~nExp:~n~ts~nGot:~n~ts~n\", [Code, Expected, Got]),\n",
