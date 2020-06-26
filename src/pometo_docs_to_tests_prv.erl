@@ -125,32 +125,32 @@ gen_test3(["```" ++ _Rest | T], ?GETTING_TEST, Test, Acc) ->
         gen_test3(T, ?IN_TEXT, #test{seq = N + 1, title = Tt}, [NewTest3, NewTest2, NewTest1 | Acc])
     end;
 gen_test3([Line | T], ?GETTING_RESULT, Test, Acc) ->
-    io:format("in gen_test3 (3)~n", []),
+    io:format("in gen_test3 (3) ~p~n", [Line]),
     #test{resultsacc = R} = Test,
     gen_test3(T, ?GETTING_RESULT, Test#test{resultsacc = [string:trim(Line, trailing, "\n") | R]}, Acc);
 gen_test3([Line | T], ?GETTING_LAZY, Test, Acc) ->
-    io:format("in gen_test3 (4)~n", []),
+    io:format("in gen_test3 (4) ~p~n", [Line]),
     #test{lazyacc = R} = Test,
     gen_test3(T, ?GETTING_RESULT, Test#test{lazyacc = [string:trim(Line, trailing, "\n") | R]}, Acc);
 gen_test3([Line | T], ?GETTING_TEST, Test, Acc) ->
-    io:format("in gen_test3 (5)~n", []),
+    io:format("in gen_test3 (5) ~p~n", [Line]),
     #test{codeacc = C} = Test,
     gen_test3(T, ?GETTING_TEST, Test#test{codeacc = [string:trim(Line, trailing, "\n") | C]}, Acc);
 gen_test3(["```pometo_results" ++ _Rest | T], ?IN_TEXT, Test, Acc) ->
-    io:format("in gen_test3 (6)~n", []),
+    io:format("in gen_test3 (6) pometo_results~n", []),
     gen_test3(T, ?GETTING_RESULT, Test, Acc);
 gen_test3(["```pometo" ++ _Rest | T], ?IN_TEXT, Test, Acc) ->
-    io:format("in gen_test3 (7)~n", []),
+    io:format("in gen_test3 (7) pometo~n", []),
     gen_test3(T, ?GETTING_TEST, Test, Acc);
 gen_test3(["```pometo_lazy" ++ _Rest | T], ?IN_TEXT, Test, Acc) ->
-    io:format("in gen_test3 (8)~n", []),
+    io:format("in gen_test3 (8) pometo_lazy~n", []),
     gen_test3(T, ?GETTING_LAZY, Test, Acc);
 gen_test3(["## " ++ Title | T], ?IN_TEXT, Test, Acc) ->
-    io:format("in gen_test3 (9)~n", []),
+    io:format("in gen_test3 (9) Title ~p~n", [Title]),
     NewTitle = normalise(Title),
     gen_test3(T, ?IN_TEXT, Test#test{title = NewTitle}, Acc);
 gen_test3([_H | T], ?IN_TEXT, Test, Acc) ->
-    io:format("in gen_test3 (10)~n", []),
+    io:format("in gen_test3 (10) discard ~p~n", [_H]),
     gen_test3(T, ?IN_TEXT, Test, Acc).
 
 normalise(Text) ->
