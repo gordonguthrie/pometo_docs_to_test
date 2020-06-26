@@ -140,7 +140,7 @@ gen_test3([Line | T], ?GETTING_RESULT, Test, Acc) ->
 gen_test3([Line | T], ?GETTING_LAZY, Test, Acc) ->
     io:format("in gen_test3 (7) ~ts~n", [Line]),
     #test{lazyacc = R} = Test,
-    gen_test3(T, ?GETTING_RESULT, Test#test{lazyacc = [string:trim(Line, trailing, "\n") | R]}, Acc);
+    gen_test3(T, ?GETTING_LAZY, Test#test{lazyacc = [string:trim(Line, trailing, "\n") | R]}, Acc);
 gen_test3([Line | T], ?GETTING_TEST, Test, Acc) ->
     io:format("in gen_test3 (8) ~ts~n", [Line]),
     #test{codeacc = C} = Test,
