@@ -105,6 +105,7 @@ gen_test3(["```" ++ _Rest | T], ?GETTING_RESULT, Test, Acc) ->
           resultsacc = R} = Test,
     NewTest1 = make_test(Tt, "interpreter", integer_to_list(N), lists:reverse(C), lists:reverse(R)),
     NewTest2 = make_test(Tt, "compiler",    integer_to_list(N), lists:reverse(C), lists:reverse(R)),
+    NewTest2 = make_test(Tt, "compiler_lazy",    integer_to_list(N), lists:reverse(C), lists:reverse(R)),
     %%% we preserve the title, the sequence number will keep the test name different
     %%% if there isn't another title given anyhoo
     gen_test3(T, ?IN_TEXT, #test{seq = N + 1, title = Tt}, [NewTest2, NewTest1 | Acc]);
@@ -148,7 +149,9 @@ make_test(Title, Type, Seq, Code, Results) ->
     "interpreter" ->
       "    Got = pometo_test_helper:run_" ++ Type ++ "_test(Code),\n";
     "compiler" ->
-      "    Got = pometo_test_helper:run_" ++ Type ++ "_test(\"" ++ NameRoot ++ "\", Code),\n"
+      "    Got = pometo_test_helper:run_" ++ Type ++ "_test(\"" ++ NameRoot ++ "\", Code),\n";
+    "compiler_lazy" ->
+      "    Got = pometo_test_helper:run_" ++ Type ++ "_lazy_test(\"" ++ NameRoot ++ "\", Code),\n"
     end,
   Printing = "    % ?debugFmt(\" in " ++ NameRoot ++ "~nCode:~n~ts~nExp:~n~ts~nGot:~n~ts~n\", [Code, Expected, Got]),\n",
   Assert   = "    ?_assertEqual(Expected, Got).\n\n",
