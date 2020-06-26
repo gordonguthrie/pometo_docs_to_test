@@ -8,6 +8,7 @@
 -define(IN_TEXT,        1).
 -define(GETTING_TEST,   2).
 -define(GETTING_RESULT, 3).
+-define(GETTING_LAZY,   4).
 
 -define(SPACE, 32).
 -define(UNDERSCORE, 95).
@@ -16,7 +17,8 @@
                seq        = 1,
                title      = "",
                codeacc    = [],
-               resultsacc = []
+               resultsacc = [],
+               lazyacc    = []
     }).
 
 %% ===================================================================
@@ -97,21 +99,36 @@ gen_test2(Filename, Lines, GeneratedTestDir) ->
 %% as then the first failing test you should fix appears at the bottom
 gen_test3([], _, _, Acc) -> lists:flatten(Acc);
 gen_test3(["```" ++ _Rest | T], ?GETTING_TEST, Test, Acc) ->
-    gen_test3(T, ?IN_TEXT, Test, Acc);
-gen_test3(["```" ++ _Rest | T], ?GETTING_RESULT, Test, Acc) ->
     #test{seq        = N,
           title      = Tt,
           codeacc    = C,
-          resultsacc = R} = Test,
-    NewTest1 = make_test(Tt, "interpreter",   integer_to_list(N), lists:reverse(C), lists:reverse(R)),
-    NewTest2 = make_test(Tt, "compiler",      integer_to_list(N), lists:reverse(C), lists:reverse(R)),
-    NewTest3 = make_test(Tt, "compiler_lazy", integer_to_list(N), lists:reverse(C), lists:reverse(R)),
-    %%% we preserve the title, the sequence number will keep the test name different
-    %%% if there isn't another title given anyhoo
-    gen_test3(T, ?IN_TEXT, #test{seq = N + 1, title = Tt}, [NewTest3, NewTest2, NewTest1 | Acc]);
+          resultsacc = R,
+          lazyacc    = L} = Test,
+    % we only ocassionally get different lazy results
+    case {C, R, L} of
+      {[], [], []} ->
+        gen_test3(T, ?IN_TEXT, Test, Acc);
+      {_, _, []} ->
+        NewTest1 = make_test(Tt, "interpreter",   integer_to_list(N), lists:reverse(C), lists:reverse(R)),
+        NewTest2 = make_test(Tt, "compiler",      integer_to_list(N), lists:reverse(C), lists:reverse(R)),
+        NewTest3 = make_test(Tt, "compiler_lazy", integer_to_list(N), lists:reverse(C), lists:reverse(R)),
+        %%% we preserve the title, the sequence number will keep the test name different
+        %%% if there isn't another title given anyhoo
+        gen_test3(T, ?IN_TEXT, #test{seq = N + 1, title = Tt}, [NewTest3, NewTest2, NewTest1 | Acc]);
+      {_, _, _} ->
+        NewTest1 = make_test(Tt, "interpreter",   integer_to_list(N), lists:reverse(C), lists:reverse(R)),
+        NewTest2 = make_test(Tt, "compiler",      integer_to_list(N), lists:reverse(C), lists:reverse(R)),
+        NewTest3 = make_test(Tt, "compiler_lazy", integer_to_list(N), lists:reverse(C), lists:reverse(L)),
+        %%% we preserve the title, the sequence number will keep the test name different
+        %%% if there isn't another title given anyhoo
+        gen_test3(T, ?IN_TEXT, #test{seq = N + 1, title = Tt}, [NewTest3, NewTest2, NewTest1 | Acc])
+    end;
 gen_test3([Line | T], ?GETTING_RESULT, Test, Acc) ->
     #test{resultsacc = R} = Test,
     gen_test3(T, ?GETTING_RESULT, Test#test{resultsacc = [string:trim(Line, trailing, "\n") | R]}, Acc);
+gen_test3([Line | T], ?GETTING_LAZY, Test, Acc) ->
+    #test{lazyacc = R} = Test,
+    gen_test3(T, ?GETTING_RESULT, Test#test{lazyacc = [string:trim(Line, trailing, "\n") | R]}, Acc);
 gen_test3([Line | T], ?GETTING_TEST, Test, Acc) ->
     #test{codeacc = C} = Test,
     gen_test3(T, ?GETTING_TEST, Test#test{codeacc = [string:trim(Line, trailing, "\n") | C]}, Acc);
@@ -119,6 +136,8 @@ gen_test3(["```pometo_results" ++ _Rest | T], ?IN_TEXT, Test, Acc) ->
     gen_test3(T, ?GETTING_RESULT, Test, Acc);
 gen_test3(["```pometo" ++ _Rest | T], ?IN_TEXT, Test, Acc) ->
     gen_test3(T, ?GETTING_TEST, Test, Acc);
+gen_test3(["```pometo_lazy" ++ _Rest | T], ?IN_TEXT, Test, Acc) ->
+    gen_test3(T, ?GETTING_LAZY, Test, Acc);
 gen_test3(["## " ++ Title | T], ?IN_TEXT, Test, Acc) ->
     NewTitle = normalise(Title),
     gen_test3(T, ?IN_TEXT, Test#test{title = NewTitle}, Acc);
