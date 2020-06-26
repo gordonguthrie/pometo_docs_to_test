@@ -150,7 +150,8 @@ gen_test3(["## " ++ Title | T], ?IN_TEXT, Test, Acc) ->
     NewTitle = normalise(Title),
     gen_test3(T, ?IN_TEXT, Test#test{title = NewTitle}, Acc);
 gen_test3([_H | T], ?IN_TEXT, Test, Acc) ->
-    io:format("in gen_test3 (9) discard ~ts~n", [_H]),
+    io:format("in gen_test3 (9) discard <~p>~n", [_H]),
+    io:format("in gen_test3 (9) discard <~ts>~n", [_H]),
     gen_test3(T, ?IN_TEXT, Test, Acc).
 
 normalise(Text) ->
