@@ -98,7 +98,7 @@ gen_test2(Filename, Lines, GeneratedTestDir) ->
 %% However when you run rebar3 eunit it is easier to have the tests Complicated -> Simple
 %% as then the first failing test you should fix appears at the bottom
 gen_test3([], _, _, Acc) -> lists:flatten(Acc);
-gen_test3(["```" ++ _Rest | T], ?GETTING_TEST, Test, Acc) ->
+gen_test3(["```" | T], ?GETTING_TEST, Test, Acc) ->
     io:format("in gen_test3 (1) Test is ~p~n", [Test]),
     gen_test3(T, ?IN_TEXT, Test, Acc);
 gen_test3(["```pometo_results" ++ _Rest | T], ?IN_TEXT, Test, Acc) ->
