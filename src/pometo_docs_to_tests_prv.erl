@@ -99,13 +99,10 @@ gen_test2(Filename, Lines, GeneratedTestDir) ->
 %% as then the first failing test you should fix appears at the bottom
 gen_test3([], _, _, Acc) -> lists:flatten(Acc);
 gen_test3(["```pometo_results" ++ _Rest | T], ?IN_TEXT, Test, Acc) ->
-    io:format("in gen_test3 (2) pometo_results~n", []),
     gen_test3(T, ?GETTING_RESULT, Test, Acc);
 gen_test3(["```pometo_lazy" ++ _Rest | T], ?IN_TEXT, Test, Acc) ->
-    io:format("in gen_test3 (3) pometo_lazy~n", []),
     gen_test3(T, ?GETTING_LAZY, Test, Acc);
 gen_test3(["```pometo" ++ _Rest | T], ?IN_TEXT, Test, Acc) ->
-    io:format("in gen_test3 (4) Test is ~p~n", [Test]),
     #test{seq        = N,
           title      = Tt,
           codeacc    = C,
@@ -131,26 +128,20 @@ gen_test3(["```pometo" ++ _Rest | T], ?IN_TEXT, Test, Acc) ->
         gen_test3(T, ?GETTING_TEST, #test{seq = N + 1, title = Tt}, [NewTest3, NewTest2, NewTest1 | Acc])
     end;
 gen_test3(["```" ++ _Rest | T], _, Test, Acc) ->
-    io:format("in gen_test3 (5) Test is ~p~n", [Test]),
     gen_test3(T, ?IN_TEXT, Test, Acc);
 gen_test3([Line | T], ?GETTING_RESULT, Test, Acc) ->
-    io:format("in gen_test3 (6) ~ts~n", [Line]),
     #test{resultsacc = R} = Test,
     gen_test3(T, ?GETTING_RESULT, Test#test{resultsacc = [string:trim(Line, trailing, "\n") | R]}, Acc);
 gen_test3([Line | T], ?GETTING_LAZY, Test, Acc) ->
-    io:format("in gen_test3 (7) ~ts~n", [Line]),
     #test{lazyacc = R} = Test,
     gen_test3(T, ?GETTING_LAZY, Test#test{lazyacc = [string:trim(Line, trailing, "\n") | R]}, Acc);
 gen_test3([Line | T], ?GETTING_TEST, Test, Acc) ->
-    io:format("in gen_test3 (8) ~ts~n", [Line]),
     #test{codeacc = C} = Test,
     gen_test3(T, ?GETTING_TEST, Test#test{codeacc = [string:trim(Line, trailing, "\n") | C]}, Acc);
 gen_test3(["## " ++ Title | T], ?IN_TEXT, Test, Acc) ->
-    io:format("in gen_test3 (9) Title ~p~n", [Title]),
     NewTitle = normalise(Title),
     gen_test3(T, ?IN_TEXT, Test#test{title = NewTitle}, Acc);
 gen_test3([_H | T], ?IN_TEXT, Test, Acc) ->
-    io:format("in gen_test3 (10) discard <~ts>~n", [_H]),
     gen_test3(T, ?IN_TEXT, Test, Acc).
 
 normalise(Text) ->
