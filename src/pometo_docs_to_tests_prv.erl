@@ -113,19 +113,21 @@ gen_test3(["```pometo" ++ _Rest | T], ?IN_TEXT, Test, Acc) ->
       {[], [], []} ->
         gen_test3(T, ?GETTING_TEST, Test, Acc);
       {_, _, []} ->
-        NewTest1 = make_test(Tt, "interpreter",   integer_to_list(N), lists:reverse(C), lists:reverse(R)),
-        NewTest2 = make_test(Tt, "compiler",      integer_to_list(N), lists:reverse(C), lists:reverse(R)),
-        NewTest3 = make_test(Tt, "compiler_lazy", integer_to_list(N), lists:reverse(C), lists:reverse(R)),
+        NewTest1 = make_test(Tt, "interpreter",      integer_to_list(N), lists:reverse(C), lists:reverse(R)),
+        NewTest2 = make_test(Tt, "compiler",         integer_to_list(N), lists:reverse(C), lists:reverse(R)),
+        NewTest3 = make_test(Tt, "compiler_lazy",    integer_to_list(N), lists:reverse(C), lists:reverse(R)),
+        NewTest4 = make_test(Tt, "compiler_indexed", integer_to_list(N), lists:reverse(C), lists:reverse(R)),
         %%% we preserve the title, the sequence number will keep the test name different
         %%% if there isn't another title given anyhoo
-        gen_test3(T, ?GETTING_TEST, #test{seq = N + 1, title = Tt}, [NewTest3, NewTest2, NewTest1 | Acc]);
+        gen_test3(T, ?GETTING_TEST, #test{seq = N + 1, title = Tt}, [NewTest4, NewTest3, NewTest2, NewTest1 | Acc]);
       {_, _, _} ->
-        NewTest1 = make_test(Tt, "interpreter",   integer_to_list(N), lists:reverse(C), lists:reverse(R)),
-        NewTest2 = make_test(Tt, "compiler",      integer_to_list(N), lists:reverse(C), lists:reverse(R)),
-        NewTest3 = make_test(Tt, "compiler_lazy", integer_to_list(N), lists:reverse(C), lists:reverse(L)),
+        NewTest1 = make_test(Tt, "interpreter",      integer_to_list(N), lists:reverse(C), lists:reverse(R)),
+        NewTest2 = make_test(Tt, "compiler",         integer_to_list(N), lists:reverse(C), lists:reverse(R)),
+        NewTest3 = make_test(Tt, "compiler_lazy",    integer_to_list(N), lists:reverse(C), lists:reverse(L)),
+        NewTest4 = make_test(Tt, "compiler_indexed", integer_to_list(N), lists:reverse(C), lists:reverse(R)),
         %%% we preserve the title, the sequence number will keep the test name different
         %%% if there isn't another title given anyhoo
-        gen_test3(T, ?GETTING_TEST, #test{seq = N + 1, title = Tt}, [NewTest3, NewTest2, NewTest1 | Acc])
+        gen_test3(T, ?GETTING_TEST, #test{seq = N + 1, title = Tt}, [NewTest4, NewTest3, NewTest2, NewTest1 | Acc])
     end;
 gen_test3(["```" ++ _Rest | T], _, Test, Acc) ->
     gen_test3(T, ?IN_TEXT, Test, Acc);
