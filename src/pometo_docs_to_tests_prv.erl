@@ -101,13 +101,13 @@ gen_test3([], _, _, Acc) -> lists:flatten(Acc);
 gen_test3(["```" | T], ?GETTING_TEST, Test, Acc) ->
     io:format("in gen_test3 (1) Test is ~p~n", [Test]),
     gen_test3(T, ?IN_TEXT, Test, Acc);
-gen_test3(["```pometo_results" ++ _Rest | T], ?IN_TEXT, Test, Acc) ->
+gen_test3(["```pometo_results" | T], ?IN_TEXT, Test, Acc) ->
     io:format("in gen_test3 (2) pometo_results~n", []),
     gen_test3(T, ?GETTING_RESULT, Test, Acc);
-gen_test3(["```pometo_lazy" ++ _Rest | T], ?IN_TEXT, Test, Acc) ->
+gen_test3(["```pometo_lazy" | T], ?IN_TEXT, Test, Acc) ->
     io:format("in gen_test3 (3) pometo_lazy~n", []),
     gen_test3(T, ?GETTING_LAZY, Test, Acc);
-gen_test3(["```pometo" ++ _Rest | T], ?IN_TEXT, Test, Acc) ->
+gen_test3(["```pometo" | T], ?IN_TEXT, Test, Acc) ->
     io:format("in gen_test3 (4) Test is ~p~n", [Test]),
     #test{seq        = N,
           title      = Tt,
