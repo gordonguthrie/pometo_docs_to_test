@@ -64,16 +64,13 @@ make_tests(App) ->
 get_files(Root) ->
 		RawFiles = filelib:wildcard(Root),
 		Files     = [{X}                   || X <- RawFiles, filename:extension(X) == ".md"],
-		io:format("Files is ~p~n", [Files]),
 		Dirs      = [filename:join(X, "*") || X <- RawFiles, filelib:is_dir(X),
 																												 filename:basename(X) /= "_site",
 																												 filename:basename(X) /= "_data",
 																												 filename:basename(X) /= "_layouts",
 																												 filename:basename(X) /= "assets",
 																												 filename:basename(X) /= "images"],
-		io:format("Dirs is ~p~n", [Dirs]),
 		DeepFiles = [get_files(X)          || X <- Dirs],
-		io:format("DeepFiles is ~p~n", [DeepFiles]),
 		[Files ++ lists:flatten(DeepFiles)].
 
 generate_tests([], _GeneratedTestDir) -> ok;
@@ -110,13 +107,10 @@ gen_test3([], _, Test, Acc) ->
 	{_NewTest, NewAcc} = process_test(Test, Acc),
 	lists:flatten(NewAcc);
 gen_test3(["```pometo_results" ++ _Rest | T], ?IN_TEXT, Test, Acc) ->
-		io:format("in gen_test3 (2) results~n", []),
 		gen_test3(T, ?GETTING_RESULT, Test, Acc);
 gen_test3(["```pometo_lazy" ++ _Rest | T], ?IN_TEXT, Test, Acc) ->
-		io:format("in gen_test3 (3) lazy~n", []),
 		gen_test3(T, ?GETTING_LAZY, Test, Acc);
 gen_test3(["```pometo" ++ _Rest | T], ?IN_TEXT, Test, Acc) ->
-		io:format("in gen_test3 (4) pometo~p~n", [Test]),
 		{NewTest, NewAcc} = process_test(Test, Acc),
 		gen_test3(T, ?GETTING_TEST, NewTest, NewAcc);
 gen_test3(["```" ++ _Rest | T], _, Test, Acc) ->
