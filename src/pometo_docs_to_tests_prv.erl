@@ -14,11 +14,12 @@
 -define(UNDERSCORE, 95).
 
 -record(test, {
-							 seq        = 1,
-							 title      = "",
-							 codeacc    = [],
-							 resultsacc = [],
-							 lazyacc    = []
+							 seq          = 1,
+							 title        = "",
+							 codeacc      = [],
+							 resultsacc   = [],
+							 lazyacc      = [],
+							 stashedtitle = ""
 		}).
 
 %% ===================================================================
@@ -103,8 +104,11 @@ gen_test2(Filename, Lines, GeneratedTestDir) ->
 %% Generally docs pages are written from Simple -> Complicated
 %% However when you run rebar3 eunit it is easier to have the tests Complicated -> Simple
 %% as then the first failing test you should fix appears at the bottom
-gen_test3([], _, Test, Acc) ->
-	{_NewTest, NewAcc} = process_test(Test, Acc),
+gen_test3([], _, #test{stashedtitle = NewTitle} = Test, Acc) ->
+	% there is a problem with the deferred processing of a page
+	% this is how we deal with it - we pull the stashed title out and use that
+	% on the final walk around the park...
+	{_NewTest, NewAcc} = process_test(Test#test{title = NewTitle}, Acc),
 	lists:flatten(NewAcc);
 gen_test3(["```pometo_results" ++ _Rest | T], ?IN_TEXT, Test, Acc) ->
 		gen_test3(T, ?GETTING_RESULT, Test, Acc);
@@ -139,7 +143,8 @@ process_test(Test, Acc) ->
 	% we only ocassionally get different lazy results
 	case {C, R, L} of
 		{[], [], []} ->
-			{Test, Acc};
+			% we have to stash the title
+			{Test#test{stashedtitle = Tt}, Acc};
 		{_, _, []} ->
 			NewTest1 = make_test(Tt, "interpreter",      integer_to_list(N), lists:reverse(C), lists:reverse(R)),
 			NewTest2 = make_test(Tt, "compiler",         integer_to_list(N), lists:reverse(C), lists:reverse(R)),
