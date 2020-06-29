@@ -67,6 +67,7 @@ get_files(Root) ->
     io:format("Files is ~p~n", [Files]),
     Dirs      = [filename:join(X, "*") || X <- RawFiles, filelib:is_dir(X),
                                                          filename:basename(X) /= "_site",
+                                                         filename:basename(X) /= "_data",
                                                          filename:basename(X) /= "_layouts",
                                                          filename:basename(X) /= "assets",
                                                          filename:basename(X) /= "images"],
@@ -85,6 +86,7 @@ generate_tests(File, GeneratedTestDir) ->
 
 gen_test2(Filename, Lines, GeneratedTestDir) ->
     Body = gen_test3(Lines, ?IN_TEXT, #test{}, []),
+    io:format("in gen test2 for ~p~n", ["Filename"]),
     case Body of
         [] -> ok;
         _  -> io:format("* writing test ~p~n", [Filename ++ ".erl"]),
@@ -106,10 +108,13 @@ gen_test2(Filename, Lines, GeneratedTestDir) ->
 %% as then the first failing test you should fix appears at the bottom
 gen_test3([], _, _, Acc) -> lists:flatten(Acc);
 gen_test3(["```pometo_results" ++ _Rest | T], ?IN_TEXT, Test, Acc) ->
+    io:format("in gen_test3 (2) results~n", []),
     gen_test3(T, ?GETTING_RESULT, Test, Acc);
 gen_test3(["```pometo_lazy" ++ _Rest | T], ?IN_TEXT, Test, Acc) ->
+    io:format("in gen_test3 (3) lazy~n", []),
     gen_test3(T, ?GETTING_LAZY, Test, Acc);
 gen_test3(["```pometo" ++ _Rest | T], ?IN_TEXT, Test, Acc) ->
+    io:format("in gen_test3 (4) pometo~n", []),
     #test{seq        = N,
           title      = Tt,
           codeacc    = C,
