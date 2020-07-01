@@ -84,7 +84,6 @@ generate_tests(File, GeneratedTestDir) ->
 
 gen_test2(Filename, Lines, GeneratedTestDir) ->
 		Body = gen_test3(Lines, ?IN_TEXT, #test{}, []),
-		io:format("in gen test2 for ~p~n", [Filename]),
 		case Body of
 				[] -> ok;
 				_  -> io:format("* writing test ~p~n", [Filename ++ ".erl"]),
