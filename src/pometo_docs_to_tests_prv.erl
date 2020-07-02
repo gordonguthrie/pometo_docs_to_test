@@ -145,7 +145,7 @@ process_test(Test, Acc) ->
 	case {C, R, L} of
 		{[], [], []} ->
 			% we have to stash the title
-			{#test{seq = N + 1, stashedtitle = Tt}, Acc};
+			{Test#test{seq = N + 1, stashedtitle = Tt}, Acc};
 		{_, _, []} ->
 			NewTest1 = make_test(At, "interpreter",            integer_to_list(N), lists:reverse(C), lists:reverse(R)),
 			NewTest2 = make_test(At, "compiler",               integer_to_list(N), lists:reverse(C), lists:reverse(R)),
@@ -155,7 +155,7 @@ process_test(Test, Acc) ->
 			NewTest6 = make_test(At, "compiler_force_unindex", integer_to_list(N), lists:reverse(C), lists:reverse(R)),
 			%%% we preserve the title, the sequence number will keep the test name different
 			%%% if there isn't another title given anyhoo
-			{#test{seq = N + 1, stashedtitle = Tt}, [NewTest6, NewTest5, NewTest4, NewTest3, NewTest2, NewTest1 | Acc]};
+			{#test{seq = N + 1, title = At, stashedtitle = Tt}, [NewTest6, NewTest5, NewTest4, NewTest3, NewTest2, NewTest1 | Acc]};
 		{_, _, _} ->
 			NewTest1 = make_test(At, "interpreter",            integer_to_list(N), lists:reverse(C), lists:reverse(R)),
 			NewTest2 = make_test(At, "compiler",               integer_to_list(N), lists:reverse(C), lists:reverse(R)),
@@ -165,7 +165,7 @@ process_test(Test, Acc) ->
 			NewTest6 = make_test(At, "compiler_force_unindex", integer_to_list(N), lists:reverse(C), lists:reverse(R)),
 			%%% we preserve the title, the sequence number will keep the test name different
 			%%% if there isn't another title given anyhoo
-			{#test{seq = N + 1, stashedtitle = Tt}, [NewTest6, NewTest5, NewTest4, NewTest3, NewTest2, NewTest1 | Acc]}
+			{#test{seq = N + 1, title = At, stashedtitle = Tt}, [NewTest6, NewTest5, NewTest4, NewTest3, NewTest2, NewTest1 | Acc]}
 	end.
 
 normalise(Text) ->
