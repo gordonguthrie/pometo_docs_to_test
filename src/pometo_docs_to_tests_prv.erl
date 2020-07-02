@@ -14,7 +14,7 @@
 -define(UNDERSCORE, 95).
 
 -record(test, {
-							 seq          = 1,
+							 seq          = 0,
 							 title        = "",
 							 codeacc      = [],
 							 resultsacc   = [],
@@ -129,7 +129,7 @@ gen_test3([Line | T], ?GETTING_TEST, Test, Acc) ->
 		gen_test3(T, ?GETTING_TEST, Test#test{codeacc = [string:trim(Line, trailing, "\n") | C]}, Acc);
 gen_test3(["## " ++ Title | T], ?IN_TEXT, Test, Acc) ->
 		NewTitle = normalise(Title),
-		gen_test3(T, ?IN_TEXT, Test#test{title = NewTitle}, Acc);
+		gen_test3(T, ?IN_TEXT, Test#test{stashedtitle = NewTitle}, Acc);
 gen_test3([_H | T], ?IN_TEXT, Test, Acc) ->
 		gen_test3(T, ?IN_TEXT, Test, Acc).
 
