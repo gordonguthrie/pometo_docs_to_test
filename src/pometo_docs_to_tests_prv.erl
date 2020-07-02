@@ -169,7 +169,7 @@ process_test(Test, Acc) ->
 
 normalise(Text) ->
 		Normalised = norm2(string:to_lower(Text), []),
-		case hd(Normalised) of
+		case [hd(Normalised)] of
 			"_" -> "test" ++ Normalised;
 			_   ->           Normalised
 	end.
