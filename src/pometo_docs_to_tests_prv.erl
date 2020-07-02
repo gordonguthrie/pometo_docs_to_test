@@ -129,7 +129,10 @@ gen_test3([Line | T], ?GETTING_TEST, Test, Acc) ->
 		gen_test3(T, ?GETTING_TEST, Test#test{codeacc = [string:trim(Line, trailing, "\n") | C]}, Acc);
 gen_test3(["## " ++ Title | T], ?IN_TEXT, Test, Acc) ->
 		NewTitle = normalise(Title),
-		gen_test3(T, ?IN_TEXT, Test#test{stashedtitle = NewTitle}, Acc);
+		#test{title        = Tt,
+					stashedtitle = St} = Test,
+		io:format("in gen_test3 got a new title ~p Title was ~p Stashed is ~p~n", [NewTitle, Tt, St]),
+		gen_test3(T, ?IN_TEXT, Test#test{title = NewTitle}, Acc);
 gen_test3([_H | T], ?IN_TEXT, Test, Acc) ->
 		gen_test3(T, ?IN_TEXT, Test, Acc).
 
@@ -140,6 +143,7 @@ process_test(Test, Acc) ->
 				resultsacc   = R,
 				lazyacc      = L,
 				stashedtitle = At} = Test,
+	io:format("in process_test Title is  ~p Stashed is ~p~n", [Tt, At]),
 	% we only ocassionally get different lazy results
 	case {C, R, L} of
 		{[], [], []} ->
