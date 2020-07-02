@@ -135,36 +135,37 @@ gen_test3([_H | T], ?IN_TEXT, Test, Acc) ->
 		gen_test3(T, ?IN_TEXT, Test, Acc).
 
 process_test(Test, Acc) ->
-	#test{seq        = N,
-				title      = Tt,
-				codeacc    = C,
-				resultsacc = R,
-				lazyacc    = L} = Test,
+	#test{seq          = N,
+				title        = Tt,
+				codeacc      = C,
+				resultsacc   = R,
+				lazyacc      = L,
+				stashedtitle = At} = Test,
 	% we only ocassionally get different lazy results
 	case {C, R, L} of
 		{[], [], []} ->
 			% we have to stash the title
-			{Test#test{stashedtitle = Tt}, Acc};
+			{#test{seq = N + 1, stashedtitle = Tt}, Acc};
 		{_, _, []} ->
-			NewTest1 = make_test(Tt, "interpreter",            integer_to_list(N), lists:reverse(C), lists:reverse(R)),
-			NewTest2 = make_test(Tt, "compiler",               integer_to_list(N), lists:reverse(C), lists:reverse(R)),
-			NewTest3 = make_test(Tt, "compiler_lazy",          integer_to_list(N), lists:reverse(C), lists:reverse(R)),
-			NewTest4 = make_test(Tt, "compiler_indexed",       integer_to_list(N), lists:reverse(C), lists:reverse(R)),
-			NewTest5 = make_test(Tt, "compiler_force_index",   integer_to_list(N), lists:reverse(C), lists:reverse(R)),
-			NewTest6 = make_test(Tt, "compiler_force_unindex", integer_to_list(N), lists:reverse(C), lists:reverse(R)),
+			NewTest1 = make_test(At, "interpreter",            integer_to_list(N), lists:reverse(C), lists:reverse(R)),
+			NewTest2 = make_test(At, "compiler",               integer_to_list(N), lists:reverse(C), lists:reverse(R)),
+			NewTest3 = make_test(At, "compiler_lazy",          integer_to_list(N), lists:reverse(C), lists:reverse(R)),
+			NewTest4 = make_test(At, "compiler_indexed",       integer_to_list(N), lists:reverse(C), lists:reverse(R)),
+			NewTest5 = make_test(At, "compiler_force_index",   integer_to_list(N), lists:reverse(C), lists:reverse(R)),
+			NewTest6 = make_test(At, "compiler_force_unindex", integer_to_list(N), lists:reverse(C), lists:reverse(R)),
 			%%% we preserve the title, the sequence number will keep the test name different
 			%%% if there isn't another title given anyhoo
-			{#test{seq = N + 1, title = Tt}, [NewTest6, NewTest5, NewTest4, NewTest3, NewTest2, NewTest1 | Acc]};
+			{#test{seq = N + 1, stashedtitle = Tt}, [NewTest6, NewTest5, NewTest4, NewTest3, NewTest2, NewTest1 | Acc]};
 		{_, _, _} ->
-			NewTest1 = make_test(Tt, "interpreter",            integer_to_list(N), lists:reverse(C), lists:reverse(R)),
-			NewTest2 = make_test(Tt, "compiler",               integer_to_list(N), lists:reverse(C), lists:reverse(R)),
-			NewTest3 = make_test(Tt, "compiler_lazy",          integer_to_list(N), lists:reverse(C), lists:reverse(L)),
-			NewTest4 = make_test(Tt, "compiler_indexed",       integer_to_list(N), lists:reverse(C), lists:reverse(R)),
-			NewTest5 = make_test(Tt, "compiler_force_index",   integer_to_list(N), lists:reverse(C), lists:reverse(R)),
-			NewTest6 = make_test(Tt, "compiler_force_unindex", integer_to_list(N), lists:reverse(C), lists:reverse(R)),
+			NewTest1 = make_test(At, "interpreter",            integer_to_list(N), lists:reverse(C), lists:reverse(R)),
+			NewTest2 = make_test(At, "compiler",               integer_to_list(N), lists:reverse(C), lists:reverse(R)),
+			NewTest3 = make_test(At, "compiler_lazy",          integer_to_list(N), lists:reverse(C), lists:reverse(L)),
+			NewTest4 = make_test(At, "compiler_indexed",       integer_to_list(N), lists:reverse(C), lists:reverse(R)),
+			NewTest5 = make_test(At, "compiler_force_index",   integer_to_list(N), lists:reverse(C), lists:reverse(R)),
+			NewTest6 = make_test(At, "compiler_force_unindex", integer_to_list(N), lists:reverse(C), lists:reverse(R)),
 			%%% we preserve the title, the sequence number will keep the test name different
 			%%% if there isn't another title given anyhoo
-			{#test{seq = N + 1, title = Tt}, [NewTest6, NewTest5, NewTest4, NewTest3, NewTest2, NewTest1 | Acc]}
+			{#test{seq = N + 1, stashedtitle = Tt}, [NewTest6, NewTest5, NewTest4, NewTest3, NewTest2, NewTest1 | Acc]}
 	end.
 
 normalise(Text) ->
