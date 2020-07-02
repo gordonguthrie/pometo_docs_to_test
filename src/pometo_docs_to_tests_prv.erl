@@ -107,7 +107,6 @@ gen_test3([], _, #test{stashedtitle = NewTitle} = Test, Acc) ->
 	% there is a problem with the deferred processing of a page
 	% this is how we deal with it - we pull the stashed title out and use that
 	% on the final walk around the park...
-	io:format("in final walk round the part Test is ~p~n", [Test]),
 	{_NewTest, NewAcc} = process_test(Test#test{title = NewTitle}, Acc),
 	lists:flatten(NewAcc);
 gen_test3(["```pometo_results" ++ _Rest | T], ?IN_TEXT, Test, Acc) ->
