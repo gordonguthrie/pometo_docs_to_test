@@ -107,6 +107,7 @@ gen_test3([], _, #test{stashedtitle = NewTitle} = Test, Acc) ->
 	% there is a problem with the deferred processing of a page
 	% this is how we deal with it - we pull the stashed title out and use that
 	% on the final walk around the park...
+	io:format("in final walk round the part Test is ~p~n", [Test]),
 	{_NewTest, NewAcc} = process_test(Test#test{title = NewTitle}, Acc),
 	lists:flatten(NewAcc);
 gen_test3(["```pometo_results" ++ _Rest | T], ?IN_TEXT, Test, Acc) ->
@@ -167,7 +168,11 @@ process_test(Test, Acc) ->
 	end.
 
 normalise(Text) ->
-		norm2(string:to_lower(Text), []).
+		Normalised = norm2(string:to_lower(Text), []),
+		case hd(Normalised) of
+			"_" -> "test" ++ Normalised;
+			_   ->           Normalised
+	end.
 
 norm2([], Acc) -> lists:reverse(Acc);
 norm2([H | T], Acc) when H >= 97 andalso H =< 122 ->
@@ -185,7 +190,7 @@ make_test(Title, Type, Seq, Code, Results) ->
 	NameRoot = Title2 ++ "_" ++ Seq ++ "_" ++ Type,
 	Main = NameRoot ++ "_test_() ->\n" ++
 		"    Code     = [\"" ++ string:join(Code,    "\",\n    \"") ++ "\"],\n" ++
-		"    Expected = \"" ++ string:join(Results, "\\n\" ++ \n    \"") ++ "\",\n",
+		"    Expected = \""  ++ string:join(Results, "\\n\" ++ \n    \"") ++ "\",\n",
 	Call = case Type of
 		"interpreter" ->
 			"    Got = pometo_test_helper:run_" ++ Type ++ "_test(Code),\n";
