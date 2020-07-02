@@ -148,8 +148,10 @@ process_test(Test, Acc) ->
 	case {C, R, L} of
 		{[], [], []} ->
 			% we have to stash the title
+			io:format("no body~n", []),
 			{Test#test{seq = N + 1, stashedtitle = Tt}, Acc};
 		{_, _, []} ->
+			io:format("no lazy~n", []),
 			NewTest1 = make_test(At, "interpreter",            integer_to_list(N), lists:reverse(C), lists:reverse(R)),
 			NewTest2 = make_test(At, "compiler",               integer_to_list(N), lists:reverse(C), lists:reverse(R)),
 			NewTest3 = make_test(At, "compiler_lazy",          integer_to_list(N), lists:reverse(C), lists:reverse(R)),
@@ -160,6 +162,7 @@ process_test(Test, Acc) ->
 			%%% if there isn't another title given anyhoo
 			{#test{seq = N + 1, title = At, stashedtitle = Tt}, [NewTest6, NewTest5, NewTest4, NewTest3, NewTest2, NewTest1 | Acc]};
 		{_, _, _} ->
+			io:format("with lazy~n", []),
 			NewTest1 = make_test(At, "interpreter",            integer_to_list(N), lists:reverse(C), lists:reverse(R)),
 			NewTest2 = make_test(At, "compiler",               integer_to_list(N), lists:reverse(C), lists:reverse(R)),
 			NewTest3 = make_test(At, "compiler_lazy",          integer_to_list(N), lists:reverse(C), lists:reverse(L)),
