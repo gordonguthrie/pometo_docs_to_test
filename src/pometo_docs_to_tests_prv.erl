@@ -144,7 +144,7 @@ process_test(Test, Acc) ->
 				resultsacc   = R,
 				lazyacc      = L,
 				stashedtitle = At} = Test,
-	io:format("in process_test Seq is ~p Code is ~p Title is  ~p Stashed is ~p~n", [N, C, Tt, At]),
+	io:format("in process_test Seq is ~p Code is ~ts Title is  ~p Stashed is ~p~n", [N, C, Tt, At]),
 	% we only ocassionally get different lazy results
 	case {C, R, L} of
 		{[], [], []} ->
