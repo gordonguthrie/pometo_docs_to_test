@@ -107,7 +107,6 @@ gen_test3([], _, #test{stashedtitle = NewTitle} = Test, Acc) ->
 	% there is a problem with the deferred processing of a page
 	% this is how we deal with it - we pull the stashed title out and use that
 	% on the final walk around the park...
-	io:format("going into the process_test loop again for a blank line"),
 	{_NewTest, NewAcc} = process_test(Test#test{title = NewTitle}, Acc),
 	lists:flatten(NewAcc);
 gen_test3(["```pometo_results" ++ _Rest | T], ?IN_TEXT, Test, Acc) ->
@@ -130,9 +129,6 @@ gen_test3([Line | T], ?GETTING_TEST, Test, Acc) ->
 		gen_test3(T, ?GETTING_TEST, Test#test{codeacc = [string:trim(Line, trailing, "\n") | C]}, Acc);
 gen_test3(["## " ++ Title | T], ?IN_TEXT, Test, Acc) ->
 		NewTitle = normalise(Title),
-		#test{title        = Tt,
-					stashedtitle = St} = Test,
-		io:format("in gen_test3 got a new title ~p Title was ~p Stashed is ~p~n", [NewTitle, Tt, St]),
 		gen_test3(T, ?IN_TEXT, Test#test{title = NewTitle}, Acc);
 gen_test3([_H | T], ?IN_TEXT, Test, Acc) ->
 		gen_test3(T, ?IN_TEXT, Test, Acc).
@@ -149,14 +145,11 @@ process_test(Test, Acc) ->
 		[] -> St;
 		_  -> Tt
 	end,
-	io:format("in process_test Seq is ~p Code is ~ts~nTitle is  ~p Stashed is ~p ActualTitle is ~p~n", [N, C, Tt, St, At]),
 	case {C, R, L} of
 		{[], [], []} ->
 			% we have to stash the title
-			io:format("no body~n", []),
 			{#test{seq = N + 1, stashedtitle = Tt}, Acc};
 		{_, _, []} ->
-			io:format("no lazy~n", []),
 			NewTest1 = make_test(St, "interpreter",            integer_to_list(N), lists:reverse(C), lists:reverse(R)),
 			NewTest2 = make_test(St, "compiler",               integer_to_list(N), lists:reverse(C), lists:reverse(R)),
 			NewTest3 = make_test(St, "compiler_lazy",          integer_to_list(N), lists:reverse(C), lists:reverse(R)),
@@ -167,7 +160,6 @@ process_test(Test, Acc) ->
 			%%% if there isn't another title given anyhoo
 			{#test{seq = N + 1, stashedtitle = At}, [NewTest6, NewTest5, NewTest4, NewTest3, NewTest2, NewTest1 | Acc]};
 		{_, _, _} ->
-			io:format("with lazy~n", []),
 			NewTest1 = make_test(St, "interpreter",            integer_to_list(N), lists:reverse(C), lists:reverse(R)),
 			NewTest2 = make_test(St, "compiler",               integer_to_list(N), lists:reverse(C), lists:reverse(R)),
 			NewTest3 = make_test(St, "compiler_lazy",          integer_to_list(N), lists:reverse(C), lists:reverse(L)),
