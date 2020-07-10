@@ -39,7 +39,7 @@ init(State) ->
 												 "For each pair of marked up code snippets 6 distinct code path tests will be generated.\n" ++
 												 "There is an option for having different results for lazy evaluation (Error results differ in the lazy case/\n" ++
 												 "Work In Progress docs are excluded by default but can be built using an environment variable.\n" ++
-												 "See https://gordonguthrie.github.io/pometo/implementation_reference/getting_started_as_a_developer_of_the_pometo_runtime_and_language.html#basic-dev-cycle"}
+												 "See https://gordonguthrie.github.io/pometo/implementation_reference/getting_started_as_a_developer_of_the_pometo_runtime_and_language.html#how-to-write-docs-pages-as-tests"}
 		]),
 		{ok, rebar_state:add_provider(State, Provider)}.
 
@@ -68,17 +68,17 @@ make_tests(App) ->
 
 get_files(Root) ->
 		RawFiles = filelib:wildcard(Root),
-		Files     = [{X}                   || X <- RawFiles, filename:extension(X) == ".md"],
-		Dirs      = [filename:join(X, "*") || X <- RawFiles, filelib:is_dir(X),
-																												 filename:basename(X) /= "_site",
-																												 filename:basename(X) /= "_data",
-																												 filename:basename(X) /= "_layouts",
-																												 filename:basename(X) /= "assets",
-																												 filename:basename(X) /= "images"],
+		Files     = [{X} || X <- RawFiles, filename:extension(X) == ".md"],
+		Dirs      = [X   || X <- RawFiles, filelib:is_dir(X),
+																			 filename:basename(X) /= "_site",
+																			 filename:basename(X) /= "_data",
+																			 filename:basename(X) /= "_layouts",
+																			 filename:basename(X) /= "assets",
+																			 filename:basename(X) /= "images"],
 		BuildWIP = os:getenv("BUILDWIP"),
 		Dirs2 = case BuildWIP of
-				false -> [X           || X <- Dirs,     filename:basename(X) /= "_work_in_progress"];
-				_True -> Dirs
+				false -> [filename:join(X, "*") || X <- Dirs, filename:basename(X) /= "_work_in_progress"];
+				_True -> [filename:join(X, "*") || X <- Dirs]
 		end,
 		DeepFiles = [get_files(X) || X <- Dirs2],
 		[Files ++ lists:flatten(DeepFiles)].
