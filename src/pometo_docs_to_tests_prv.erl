@@ -39,7 +39,7 @@ init(State) ->
 												 "For each pair of marked up code snippets 6 distinct code path tests will be generated.\n" ++
 												 "There is an option for having different results for lazy evaluation (Error results differ in the lazy case/\n" ++
 												 "Work In Progress docs are excluded by default but can be built using an environment variable.\n" ++
-												 "See https://gordonguthrie.github.io/pometo/implementation_reference/getting_started_as_a_developer_of_the_pometo_runtime_and_language.html#how-to-write-docs-pages-as-tests"}
+												 "See https://gordonguthrie.github.io/pometo/implementation_reference/getting_started_as_a_developer_of_the_pometo_runtime_and_language.html#basic-dev-cycle"}
 		]),
 		{ok, rebar_state:add_provider(State, Provider)}.
 
