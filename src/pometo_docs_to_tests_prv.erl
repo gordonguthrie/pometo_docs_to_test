@@ -75,7 +75,7 @@ get_files(Root) ->
 																												 filename:basename(X) /= "_layouts",
 																												 filename:basename(X) /= "assets",
 																												 filename:basename(X) /= "images"],
-		BuildWIP = os:get_env("BUILDWIP"),
+		BuildWIP = os:getenv("BUILDWIP"),
 		Dirs2 = case BuildWIP of
 				true  -> Dirs;
 				false -> [X           || X <- Dirs,     filename:basename(X) /= "_work_in_progress"]
