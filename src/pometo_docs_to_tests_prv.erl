@@ -77,8 +77,8 @@ get_files(Root) ->
 																												 filename:basename(X) /= "images"],
 		BuildWIP = os:getenv("BUILDWIP"),
 		Dirs2 = case BuildWIP of
-				true  -> Dirs;
-				false -> [X           || X <- Dirs,     filename:basename(X) /= "_work_in_progress"]
+				false -> [X           || X <- Dirs,     filename:basename(X) /= "_work_in_progress"];
+				_True -> Dirs
 		end,
 		DeepFiles = [get_files(X) || X <- Dirs2],
 		[Files ++ lists:flatten(DeepFiles)].
