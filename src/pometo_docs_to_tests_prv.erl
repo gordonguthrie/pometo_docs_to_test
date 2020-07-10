@@ -28,14 +28,18 @@
 -spec init(rebar_state:t()) -> {ok, rebar_state:t()}.
 init(State) ->
 		Provider = providers:create([
-						{name, ?PROVIDER},                        % The 'user friendly' name of the task
-						{module, ?MODULE},                        % The module implementation of the task
-						{bare, true},                             % The task can be run by the user, always true
-						{deps, ?DEPS},                            % The list of dependencies
-						{example, "rebar3 pometo_docs_to_tests"}, % How to use the plugin
-						{opts, []},                               % list of options understood by the plugin
-						{short_desc, "builds eunit tests from pometo markdown documentation"},
-						{desc, "builds eunit tests from pometo markdown documentation"}
+						{name,       ?PROVIDER},                     % The 'user friendly' name of the task
+						{module,     ?MODULE},                       % The module implementation of the task
+						{bare,       true},                          % The task can be run by the user, always true
+						{deps,       ?DEPS},                         % The list of dependencies
+						{example,    "rebar3 pometo_docs_to_tests"}, % How to use the plugin
+						{opts,       []},                            % list of options understood by the plugin
+						{short_desc, "Builds eunit tests from pometo markdown documentation."},
+						{desc,       "Builds eunit tests from pometo markdown documentation.\n" ++
+												 "For each pair of marked up code snippets 6 distinct code path tests will be generated.\n" ++
+												 "There is an option for having different results for lazy evaluation (Error results differ in the lazy case/\n" ++
+												 "Work In Progress docs are excluded by default but can be built using an environment variable.\n" ++
+												 "See https://gordonguthrie.github.io/pometo/implementation_reference/getting_started_as_a_developer_of_the_pometo_runtime_and_language.html#how-to-write-docs-pages-as-tests"}
 		]),
 		{ok, rebar_state:add_provider(State, Provider)}.
 
@@ -71,7 +75,12 @@ get_files(Root) ->
 																												 filename:basename(X) /= "_layouts",
 																												 filename:basename(X) /= "assets",
 																												 filename:basename(X) /= "images"],
-		DeepFiles = [get_files(X)          || X <- Dirs],
+		BuildWIP = os:get_env("BUILDWIP"),
+		Dirs2 = case BuildWIP of
+				true  -> Dirs;
+				false -> [X           || X <- Dirs,     filename:basename(X) /= "_work_in_progress"]
+		end,
+		DeepFiles = [get_files(X) || X <- Dirs2],
 		[Files ++ lists:flatten(DeepFiles)].
 
 generate_tests([], _GeneratedTestDir) -> ok;
