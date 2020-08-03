@@ -54,6 +54,14 @@ format_error(Reason) ->
 		io_lib:format("~p", [Reason]).
 
 make_tests(App) ->
+		BuildWIP = os:getenv("BUILDWIP"),
+		case BuildWIP of
+				false -> io:format("not building WIP tests~n");
+				_True -> io:format("%%%%%%%%%%%%%%%%%%%%%%\n"
+													 "% building WIP Tests %\n"
+													 "%%%%%%%%%%%%%%%%%%%%%%\n")
+		end,
+
 		Root = rebar_app_info:dir(App),
 		GeneratedTestDir = filename:join([Root, "test", "generated_tests"]),
 		case filelib:is_dir(GeneratedTestDir) of
