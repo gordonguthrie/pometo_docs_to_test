@@ -134,6 +134,8 @@ gen_test3(["```pometo_results" ++ _Rest | T], ?IN_TEXT, Test, Acc) ->
 		gen_test3(T, ?GETTING_RESULT, Test, Acc);
 gen_test3(["```pometo_lazy" ++ _Rest | T], ?IN_TEXT, Test, Acc) ->
 		gen_test3(T, ?GETTING_LAZY, Test, Acc);
+gen_test3(["```pometo_interpreted" ++ _Rest | T], ?IN_TEXT, Test, Acc) ->
+		gen_test3(T, ?GETTING_INTERPRETED, Test, Acc);
 gen_test3(["```pometo" ++ _Rest | T], ?IN_TEXT, Test, Acc) ->
 		{NewTest, NewAcc} = process_test(Test, Acc),
 		gen_test3(T, ?GETTING_TEST, NewTest, NewAcc);
